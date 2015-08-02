@@ -1,0 +1,49 @@
+doctype html
+html
+  head
+    include includes/head
+
+  body#user-update
+    .container
+      .page-header
+        h1 Admin Dashboard
+
+      .row
+        .col-md-4
+          h2 CSV
+          a(href="/admin/generate/pledge_amounts.csv") Generate pledge_amounts.csv
+          {% if pledge_amounts %}
+          &nbsp;
+          a(href="/admin/files{{pledge_amounts}}/pledge_amounts.csv") Latest
+          {% endif %}
+          br
+          a(href="/admin/generate/pledges.csv") Generate pledges.csv
+          {% if pledges %}
+          &nbsp;
+          a(href="/admin/files{{pledges}}/pledges.csv") Latest
+          {% endif %}
+          br
+          a(href="/admin/generate/pledges_full_data.csv") Generate pledges_full_data.csv
+          
+          h2 Admin Commands
+          {% for cmd in commands %}
+          div
+            a(href="{{cmd.url}}") {{cmd.name}}
+          {% endfor %}
+
+        .col-md-4
+          h2 Missing Employer/Occupation Data
+          p Missing data for {{missingUsers|length}} users totalling ${{totalMissing}}.
+          table.table
+            tr
+              th User
+              th Donation
+            {% for user in missingUsers %}
+            tr
+              td {{user.email}}
+              td {{user.amount}}
+            {% endfor %}
+        .col-md-4
+          h2 Sharded Counters
+          label Calculated post-sharding total
+          p {{shardedCounterTotal}} cents

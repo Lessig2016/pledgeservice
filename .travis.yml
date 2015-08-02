@@ -1,0 +1,23 @@
+---
+
+language: python
+python: 2.7
+install:
+  - pip install coveralls
+before_script:
+  # App engine is not installed by default in Travis CI, so we employ the
+  # workaround recommended according in this Github issue:
+  #   https://github.com/travis-ci/travis-ci/issues/738
+  - wget http://googleappengine.googlecode.com/files/google_appengine_1.8.9.zip -nv
+  - unzip -q google_appengine_1.8.9.zip
+  - echo '{"appName":"local","appVersion":"1","hardCodeStripe":true,"stripePublicKey":"pk_test_g7UBToGvPpJ1xJa8OVsfV7zf","stripePrivateKey":"sk_test_sm4iLzUFCeEE4l8uKe4KNDU7","productionPaypal":false}' > backend/config.json
+script:
+  - coverage run --branch testrunner.py `pwd`/google_appengine/
+  - coverage report -m
+after_success:
+  coveralls --verbose
+notifications:
+  irc:
+    channels:
+      - "chat.freenode.net#maydaypac"
+    skip_join: true

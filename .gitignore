@@ -1,0 +1,13 @@
+build/
+node_modules/
+.sass-cache/
+npm-debug.log
+*.pyc
+*~
+config_NOCOMMIT.py
+/backend/config_NOCOMMIT
+/backend/config.json
+pledgeservice - Shortcut.lnk
+*.sql3
+bulkloader.yaml
+Userx.csv
