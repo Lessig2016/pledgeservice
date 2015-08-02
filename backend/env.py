@@ -179,7 +179,7 @@ class MailSender(object):
 
 def _send_mail(to, subject, text_body, html_body, reply_to=None):
   """Deferred email task"""
-  sender = ('Mayday PAC <noreply@%s.appspotmail.com>' %
+  sender = ('Lessig for President <noreply@%s.appspotmail.com>' %
             model.Config.get().app_name)
   message = mail.EmailMessage(sender=sender, subject=subject)
   message.to = to
@@ -188,7 +188,7 @@ def _send_mail(to, subject, text_body, html_body, reply_to=None):
   if reply_to:
     message.reply_to = reply_to
   else:
-    message.reply_to = 'info@mayday.us'
+    message.reply_to = 'info@lessigforpresident.com'
   message.send()
 
 def _subscribe_to_nationbuilder(email_to_subscribe, first_name, last_name,

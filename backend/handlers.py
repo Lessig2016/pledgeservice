@@ -328,8 +328,8 @@ class PledgeHandler(webapp2.RequestHandler):
           amount_dollars=data['amountCents']/100
         )
         logging.info('Trying to extract address for %s' % data['email'])
-        if len(stripe_customer.cards.data) > 0:
-          card_data = stripe_customer.cards.data[0]
+        if len(stripe_customer.sources.data) > 0:
+          card_data = stripe_customer.sources.data[0]
           if 'address_line1' in card_data:
             data['address'] = card_data['address_line1']
             if card_data['address_line2']:

@@ -101,9 +101,9 @@ h2 {
 		width: 1050px;
 	}
 		#header .logo {
-			background-image: url(../static/logo-9.svg);
+			background-image: url(../static/lessig-logo.png);
 			width: 225px;
-			height: 30px;
+			height: 60px;
 		}
 		#header blockquote {
 			float: right;
