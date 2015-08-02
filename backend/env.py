@@ -57,7 +57,7 @@ class ProdStripe(handlers.StripeBackend):
         amount=amount_cents,
         currency='usd',
         customer=customer_id,
-        statement_description='MayOne.US',
+        statement_descriptor="Lessig for President"
       )
     except stripe.CardError, e:
       logging.info('Stripe returned error for customer: %s ' % customer_id)

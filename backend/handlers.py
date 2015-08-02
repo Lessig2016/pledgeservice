@@ -354,8 +354,11 @@ class PledgeHandler(webapp2.RequestHandler):
 	)
         stripe_customer_id = stripe_customer.id
         logging.info('Trying to extract address for %s' % data['email'])
-        if len(stripe_customer.cards.data) > 0:
-          card_data = stripe_customer.cards.data[0]
+        
+        logging.info('Stripe customer is %s' % str(stripe_customer))
+
+        if len(stripe_customer.sources.data) > 0:
+          card_data = stripe_customer.sources.data[0]
           if 'address_line1' in card_data:
             data['address'] = card_data['address_line1']
             if card_data['address_line2']:

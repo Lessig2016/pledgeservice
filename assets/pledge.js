@@ -318,10 +318,10 @@ $(document).ready(function() {
       paymentConfig = pConf;
       stripeConfig = {
         key: paymentConfig.stripePublicKey,
-        name: 'LESSIG',
+        name: 'Lessig Equal Citizens Exploratory Committee',
         panelLabel: 'Pledge',
         billingAddress: true,
-        image: PLEDGE_URL + '/static/lessig-logo-128.jpg',
+        image: PLEDGE_URL + '/static/lessig-logo-128.png',
         token: function(token, args) {
           onTokenRecv(token, args);
         }
