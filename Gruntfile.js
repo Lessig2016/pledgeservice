@@ -28,7 +28,7 @@ var PROD_CONFIG = {
 var LESSIG_CONFIG = {
   appName: 'lessig-trust',
   appVersion: '1',
-  productionPaypal: true,
+  productionPaypal: false,
 };
 
 var preprocessAppYaml = function(config) {
