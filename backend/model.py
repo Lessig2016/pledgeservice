@@ -80,17 +80,21 @@ class Config(object):
       stripe_private_key = s.stripe_private_key
 
     if s:
-      paypal_user = s.paypal_user
-      paypal_password = s.paypal_password
-      paypal_signature = s.paypal_signature
+
       bitpay_api_key = s.bitpay_api_key
 
     if 'productionPaypal' in j and j['productionPaypal']:
       paypal_api_url =  "https://api-3t.paypal.com/nvp"
       paypal_url = "https://www.paypal.com/webscr"
-    else:
+      paypal_user = s.paypal_user
+      paypal_password = s.paypal_password
+      paypal_signature = s.paypal_signature
+    else: # Use the Sanbox
       paypal_api_url = "https://api-3t.sandbox.paypal.com/nvp"
       paypal_url = "https://www.sandbox.paypal.com/webscr"
+      paypal_user = s.paypal_sandbox_user
+      paypal_password = s.paypal_sandbox_password
+      paypal_signature = s.paypal_sandbox_signature
 
     Config._instance = Config.ConfigType(
       app_name = j['appName'],
