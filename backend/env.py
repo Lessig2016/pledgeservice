@@ -57,7 +57,7 @@ class ProdStripe(handlers.StripeBackend):
         amount=amount_cents,
         currency='usd',
         customer=customer_id,
-        statement_descriptor="Lessig Equal Citizens Exploratory Committee Non-Refundable Donation"
+        statement_descriptor="Lessig Equal Citizens"
       )
     except stripe.CardError, e:
       logging.info('Stripe returned error for customer: %s ' % customer_id)

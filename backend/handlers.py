@@ -359,9 +359,11 @@ class PledgeHandler(webapp2.RequestHandler):
         logging.info('Stripe customer is %s' % str(stripe_customer))
 
         if len(stripe_customer.sources.data) > 0:
-          logging.info('Address check: ' % data['address_line1_check'])
 
           card_data = stripe_customer.sources.data[0]
+          if 'address_line1_check' in card_data:
+            logging.info('Address check: %s' % card_data['address_line1_check'])
+          
           if 'address_line1' in card_data:
             data['address'] = card_data['address_line1']
             if card_data['address_line2']:
