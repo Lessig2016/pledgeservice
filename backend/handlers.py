@@ -974,7 +974,7 @@ class PaypalReturnHandler(webapp2.RequestHandler):
     if not token or not payer_id:
       logging.warning("Paypal completion missing data: " + self.request.url)
       self.error(400);
-      self.response.write("Unusual error: no token or payer id from Paypal.  Please contact info@mayday.us and report these details:")
+      self.response.write("Unusual error: no token or payer id from Paypal.  Please contact info@lessigforpresident.com and report these details:")
       self.response.write(self.request.url)
       return
 
@@ -987,7 +987,7 @@ class PaypalReturnHandler(webapp2.RequestHandler):
     rc, results = paypal.send_request(form_fields)
     if not rc:
       self.error(400);
-      self.response.write("Unusual error: Could not get payment details from Paypal.  Please contact info@mayday.us and report these details:")
+      self.response.write("Unusual error: Could not get payment details from Paypal.  Please contact info@lessigforpresident.com and report these details:")
       self.response.write(pprint.pformat(results))
       return
 
@@ -1050,7 +1050,7 @@ class PaypalReturnHandler(webapp2.RequestHandler):
 
     else:
       self.error(400);
-      self.response.write("Unusual error: Could not get complete payment from Paypal.  Please contact info@mayday.us and report these details:")
+      self.response.write("Unusual error: Could not get complete payment from Paypal.  Please contact info@lessigforpresident.com and report these details:")
       self.response.write(pprint.pformat(results))
       return
 

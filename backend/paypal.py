@@ -17,7 +17,7 @@ def send_request(fields):
     fields["SIGNATURE"] = config.paypal_signature
 
     form_data = urllib.urlencode(fields)
-
+    
     result = urlfetch.fetch(url=config.paypal_api_url, payload=form_data, method=urlfetch.POST,
                 headers={'Content-Type': 'application/x-www-form-urlencoded'})
     result_map = urlparse.parse_qs(result.content)
@@ -69,17 +69,17 @@ def SetExpressCheckout(host_url, data):
       "CANCELURL": host_url + '/pledge',
       "EMAIL": data['email'],
       "PAYMENTREQUEST_0_PAYMENTACTION": "Sale",
-      "PAYMENTREQUEST_0_DESC": "Non-refundable donation to Mayday PAC",
+      "PAYMENTREQUEST_0_DESC": "Lessig Equal Citizens Exploratory Committee",
       "PAYMENTREQUEST_0_AMT":  "%d.00" % amount,
       "PAYMENTREQUEST_0_ITEMAMT":  "%d.00" % amount,
       "PAYMENTREQUEST_0_CUSTOM": encoded_data,
-      "L_PAYMENTREQUEST_0_NAME0": "Non-refundable donation to Mayday PAC",
+      "L_PAYMENTREQUEST_0_NAME0": "Lessig Equal Citizens Exploratory Committee",
       "L_PAYMENTREQUEST_0_AMT0":  "%d.00" % amount,
       "ALLOWNOTE":  "0",
       "SOLUTIONTYPE":  "Sole",
-      "BRANDNAME":  "MayDay PAC",
+      "BRANDNAME":  "Lessig Equal Citizens Exploratory Committee",
       # TODO FIXME - LOGOIMG trumps if given; it's a different look with HDRIMG
-      "LOGOIMG":  host_url + '/static/paypal_logoimg.png',
+      "LOGOIMG":  host_url + '/static/lessig-logo-128.png',
       #"HDRIMG":   self.request.host_url + '/static/paypal_hdrimg.png',
       #"PAYFLOWCOLOR":    "00FF00",
       #"CARTBORDERCOLOR": "0000FF",
@@ -100,7 +100,7 @@ def DoExpressCheckoutPayment(token, payer_id, amount, custom):
       "TOKEN": token,
       "PAYERID": payer_id,
       "PAYMENTREQUEST_0_PAYMENTACTION": "Sale",
-      "PAYMENTREQUEST_0_DESC": "Non-refundable donation to Mayday PAC",
+      "PAYMENTREQUEST_0_DESC": "Non-refundable donation to Lessig Equal Citizens Exploratory Committee",
       "PAYMENTREQUEST_0_AMT":  amount,
       "PAYMENTREQUEST_0_ITEMAMT":  amount,
       "PAYMENTREQUEST_0_CUSTOM": custom,

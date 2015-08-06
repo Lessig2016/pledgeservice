@@ -137,7 +137,7 @@ def full_pledge_data(pledge,user):
   elif pledge.bitpay_invoice_id:
     source = 'BITCOIN'
   else:
-    source = 'STRIPE/MAYDAY.US'
+    source = 'STRIPE'
 
   return [
     source,
@@ -333,7 +333,7 @@ def get_source(pledge):
   elif pledge.bitpay_invoice_id:
     return 'BITCOIN'
   else:
-    return 'STRIPE/MAYDAY.US'
+    return 'STRIPE'
 
 def cents_to_dollar_str(cents):
   """Safely convert from cents to dollars"""
