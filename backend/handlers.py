@@ -306,7 +306,7 @@ class PledgeHandler(webapp2.RequestHandler):
     except ValueError, e:
       logging.warning('Schema check failed: %s', e)
       try:
-	logging.warning('referer: ' + self.request.referer)
+        logging.warning('referer: ' + self.request.referer)
       except:
         pass
       self.error(400)
@@ -350,14 +350,17 @@ class PledgeHandler(webapp2.RequestHandler):
       try:
         logging.info('Trying to create stripe customer %s' % data['email'])
         stripe_customer = env.stripe_backend.CreateCustomer(
-          email=data['email'], card_token=data['payment']['STRIPE']['token']
-	)
+          email=data['email'], card_token=data['payment']['STRIPE']['token'])
+          
+          
         stripe_customer_id = stripe_customer.id
         logging.info('Trying to extract address for %s' % data['email'])
         
         logging.info('Stripe customer is %s' % str(stripe_customer))
 
         if len(stripe_customer.sources.data) > 0:
+          logging.info('Address check: ' % data['address_line1_check'])
+
           card_data = stripe_customer.sources.data[0]
           if 'address_line1' in card_data:
             data['address'] = card_data['address_line1']
