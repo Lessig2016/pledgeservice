@@ -8,7 +8,10 @@ var LOCAL_CONFIG = {
 };
 
 var DEV_CONFIG = {
-  appName: 'pure-spring-568',
+  appName: 'lessig-trust-test',
+  hardCodeStripe: true,
+  stripePublicKey: 'pk_test_QNMKNczLGEwgOr0TmpjOCxmO',
+  stripePrivateKey: 'sk_test_lBGyF7m5cCVilat5siOlAIT6',
   appVersion: '1',
   productionPaypal: false,
 };
@@ -73,6 +76,7 @@ module.exports = function(grunt) {
       staging: preprocessAppYaml(STAGING_CONFIG),
       prod: preprocessAppYaml(PROD_CONFIG),
       lessig: preprocessAppYaml(LESSIG_CONFIG),
+      
     },
 
     jade: {
