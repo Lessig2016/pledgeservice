@@ -291,8 +291,10 @@ var createPledge = function(name, payment) {
       },
       error: function(data) {
         setLoading(false);
-        if ('paymentError' in data) {
-          showError("We're having trouble charging your card: " + data.paymentError);
+        responseJSON = data.responseJSON || null
+        
+        if (responseJSON && ('paymentError' in responseJSON)) {
+          showError("We're having trouble charging your card: " + responseJSON.paymentError);
         } else {
           $('#formError').text('Oops, something went wrong. Try again in a few minutes');
           $('#formError').show();
