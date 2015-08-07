@@ -212,9 +212,10 @@ var createPledge = function(name, payment) {
   var city = $('#city_input').val() || null;
   var state = $('#state_input').val() || null;
   var zip = $('#zip_input').val() || null;
-  var recurring = $('#recurring_input').is(':checked') ? true : false;
+  var recurring = $('#recurring_input').is(':checked');
   var recurrence_period = $('#recurrence_period_input').val() || null;
   var enddate = $('enddate_input').val() || null;
+  var keep_donation = $('#keep_donation').is(':checked');
   if (($("#requiredConfirmation").is(':checked') == false ) && ('BITCOIN' in payment) ) {
     console.log('Trying to pay with BITCOIN without a confirmation') 
     return;
@@ -270,6 +271,9 @@ var createPledge = function(name, payment) {
   if (state) {
     data['state'] = state;
   }
+  
+  data['keep_donation'] = keep_donation;
+  
   $("input[name='thingname']").each(function(index) {
     data[$(this).data()['nationbuildername']] =  $(this).val();
   });

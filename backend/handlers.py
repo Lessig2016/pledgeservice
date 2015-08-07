@@ -167,6 +167,8 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
       data['recurrence_period'] = ''
     if not 'nationBuilderVars' in data:
       data['nationBuilderVars'] = None
+    if not 'keep_donation' in data:
+      data['keep_donation'] = False
 
     amountCents = data['amountCents']
 
@@ -195,7 +197,8 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
                              bitpay_invoice_id = data['bitpay_invoice_id'],
                              recurring=data['recurring'],
                              recurrence_period=data['recurrence_period'],
-                             enddate=data['enddate']
+                             enddate=data['enddate'],
+                             keep_donation=data['keep_donation']
                              )
     if data['subscribe']:
       env.mailing_list_subscriber.Subscribe(
