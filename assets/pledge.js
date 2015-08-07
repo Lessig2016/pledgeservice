@@ -286,7 +286,6 @@ var createPledge = function(name, payment) {
         } else if ('bitpay_url' in data) {
           location.href = data.bitpay_url
         } else {
-          console.log(RECEIPT_URL + data.receipt_url + '&amount=' + data.pledge_amount + '&recurring=' + recurring);
           location.href = RECEIPT_URL + data.receipt_url + '&amount=' + data.pledge_amount + '&recurring=' + recurring;
         }
       },
