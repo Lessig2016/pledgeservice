@@ -319,50 +319,33 @@ class PledgeHandler(webapp2.RequestHandler):
       return
 
     # Do any server-side processing the payment processor needs.
+    stripe_customer = None
     stripe_customer_id = None
     stripe_charge_id = None
-    if 'STRIPE' in data['payment'] and data.get('recurring', '') == True:
+    if 'STRIPE' in data['payment']:
       try:
-        logging.info('Trying to create a stripe customer enrolled in a plan with recurring subscription')
-        if data.get('recurrence_period', None) == None:
-          data['recurrence_period'] = 'monthly'
-        stripe_customer  = env.stripe_backend.CreateCustomerWithPlan(
-          email=data['email'], 
-          card_token=data['payment']['STRIPE']['token'], 
-          recurrence_period=data['recurrence_period'],
-          amount_dollars=data['amountCents']/100
-        )
-        logging.info('Trying to extract address for %s' % data['email'])
-        if len(stripe_customer.sources.data) > 0:
-          card_data = stripe_customer.sources.data[0]
-          if 'address_line1' in card_data:
-            data['address'] = card_data['address_line1']
-            if card_data['address_line2']:
-              data['address'] += ', %s' % card_data['address_line2']
-          if 'address_city' in card_data:
-            data['city'] = card_data['address_city']
-          if 'address_state' in card_data:
-            data['state'] = card_data['address_state']
-          if 'address_zip' in card_data:
-            data['zipCode'] = card_data['address_zip']
+        if data.get('recurring', '') == True:
+          logging.info('Trying to create stripe customer %s for a recurring donation' % data['email'])
 
-      except Exception as e:
-        print e.message
-        self.error(400)
-        json.dump(dict(paymentError=str(e)), self.response)
-        return
-    elif 'STRIPE' in data['payment']:
-      try:
-        logging.info('Trying to create stripe customer %s' % data['email'])
-        stripe_customer = env.stripe_backend.CreateCustomer(
-          email=data['email'], card_token=data['payment']['STRIPE']['token'])
-          
+          if data.get('recurrence_period', None) == None:
+            data['recurrence_period'] = 'monthly'
+          stripe_customer  = env.stripe_backend.CreateCustomerWithPlan(
+            email=data['email'], 
+            card_token=data['payment']['STRIPE']['token'], 
+            recurrence_period=data['recurrence_period'],
+            amount_dollars=data['amountCents']/100)
+
+        else:          
+          logging.info('Trying to create stripe customer %s for a single donation' % data['email'])
+          stripe_customer = env.stripe_backend.CreateCustomer(
+            email=data['email'],
+            card_token=data['payment']['STRIPE']['token'])          
+
         stripe_customer_id = stripe_customer.id
         logging.info('Trying to extract address for %s' % data['email'])        
         logging.info('Stripe customer is %s' % str(stripe_customer))
 
         if len(stripe_customer.sources.data) > 0:
-
           card_data = stripe_customer.sources.data[0]
           if 'address_line1_check' in card_data:
             logging.info('Address check: %s' % card_data['address_line1_check'])
@@ -370,29 +353,29 @@ class PledgeHandler(webapp2.RequestHandler):
               logging.warning('Your billing address did not validate')
               self.error(400)
               json.dump(dict(paymentError='Your billing address did not validate'), self.response)              
-              return  # error trapping is not working in here, so have to do hacky early return for now
-              
+              return  # error trapping is not working in here, so have to do hacky early return for now              
+
           if 'address_line1' in card_data:
             data['address'] = card_data['address_line1']
-            if card_data['address_line2']:
-              data['address'] += ', %s' % card_data['address_line2']
+          if card_data['address_line2']:
+            data['address'] += ', %s' % card_data['address_line2']
           if 'address_city' in card_data:
             data['city'] = card_data['address_city']
           if 'address_state' in card_data:
             data['state'] = card_data['address_state']
           if 'address_zip' in card_data:
             data['zipCode'] = card_data['address_zip']
-        logging.info('Trying to charge %s' % data['email'])
-        stripe_charge_id = env.stripe_backend.Charge(stripe_customer_id,
-                                                     data['amountCents'])
 
-        logging.info('Got charge id %s' % stripe_charge_id)
+          logging.info('Trying to charge %s' % data['email'])
+          stripe_charge_id = env.stripe_backend.Charge(stripe_customer_id, data['amountCents'])
+          logging.info('Got charge id %s' % stripe_charge_id)
+
       except PaymentError, e:
         logging.warning('Payment error: %s', e)
         self.error(400)
         json.dump(dict(paymentError=str(e)), self.response)
         return
-
+        
     else:
       logging.warning('No payment processor specified: %s', data)
       self.error(400)
