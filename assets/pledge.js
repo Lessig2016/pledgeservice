@@ -212,10 +212,10 @@ var createPledge = function(name, payment) {
   var city = $('#city_input').val() || null;
   var state = $('#state_input').val() || null;
   var zip = $('#zip_input').val() || null;
-  var recurring = $('#recurring_input').is(':checked');
+  var recurring = $('#recurring_input').is(':checked') ? true : false;
   var recurrence_period = $('#recurrence_period_input').val() || null;
   var enddate = $('enddate_input').val() || null;
-  var keep_donation = $('#keep_donation').is(':checked');
+  var keep_donation = $('#keep_donation').is(':checked') ? true : false;
   if (($("#requiredConfirmation").is(':checked') == false ) && ('BITCOIN' in payment) ) {
     console.log('Trying to pay with BITCOIN without a confirmation') 
     return;
