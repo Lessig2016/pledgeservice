@@ -281,16 +281,13 @@ var createPledge = function(name, payment) {
       contentType: "application/json",
       dataType: 'json',
       success: function(data) {
-        var recurring = data.recurrence_period;
-        var amount = data.pledge_amount;
-
         if ('paypal_url' in data) {
           location.href = data.paypal_url
         } else if ('bitpay_url' in data) {
           location.href = data.bitpay_url
         } else {
-          location.href = RECEIPT_URL + $.param( data );
-          //location.href = RECEIPT_URL + data.receipt_url + '&amount=' + amount + '&recurring=' + recurring;
+          console.log(RECEIPT_URL + data.receipt_url + '&amount=' + data.pledge_amount + '&recurring=' + recurring);
+          location.href = RECEIPT_URL + data.receipt_url + '&amount=' + data.pledge_amount + '&recurring=' + recurring;
         }
       },
       error: function(data) {
