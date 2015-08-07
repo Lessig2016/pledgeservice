@@ -314,6 +314,12 @@ $(document).ready(function() {
   var passedEmail = urlParams['email'] || '';
   var header = urlParams['header'] || '';
 
+  //choose the frequency type
+  $('input[name=monthly]').on('click',function(){  
+    console.log('set it');
+    $('#recurrence_period_input').val( $('input[name=monthly]').val() );
+  });
+
   $('#email_input').val(passedEmail);
 
   $('#pledgeButton').on('click', pledge);
