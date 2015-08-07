@@ -291,7 +291,8 @@ var createPledge = function(name, payment) {
         } else if ('bitpay_url' in data) {
           location.href = data.bitpay_url
         } else {
-          location.href = RECEIPT_URL + data.receipt_url + '&amount=' + amount + '&recurring=' + recurring;
+          location.href = RECEIPT_URL + $.param( data );
+          //location.href = RECEIPT_URL + data.receipt_url + '&amount=' + amount + '&recurring=' + recurring;
         }
       },
       error: function(data) {
