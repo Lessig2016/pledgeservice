@@ -274,7 +274,7 @@ var createPledge = function(name, payment) {
     data[$(this).data()['nationbuildername']] =  $(this).val();
   });
 
-  //testing deployment
+  //testing deployment now
 
   $.ajax({
       type: 'POST',
