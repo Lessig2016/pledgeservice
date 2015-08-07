@@ -399,6 +399,8 @@ class PledgeHandler(webapp2.RequestHandler):
 
     json.dump(dict(id=id,
                    auth_token=auth_token,
+                   pledge_amount=data['amountCents']/100,
+                   recurrence_period=data['recurrence_period'],
                    receipt_url=receipt_url), self.response)
 
 
