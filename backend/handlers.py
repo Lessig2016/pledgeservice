@@ -352,10 +352,8 @@ class PledgeHandler(webapp2.RequestHandler):
         stripe_customer = env.stripe_backend.CreateCustomer(
           email=data['email'], card_token=data['payment']['STRIPE']['token'])
           
-          
         stripe_customer_id = stripe_customer.id
-        logging.info('Trying to extract address for %s' % data['email'])
-        
+        logging.info('Trying to extract address for %s' % data['email'])        
         logging.info('Stripe customer is %s' % str(stripe_customer))
 
         if len(stripe_customer.sources.data) > 0:
@@ -363,6 +361,8 @@ class PledgeHandler(webapp2.RequestHandler):
           card_data = stripe_customer.sources.data[0]
           if 'address_line1_check' in card_data:
             logging.info('Address check: %s' % card_data['address_line1_check'])
+            if card_data['address_line1_check'] == 'fail':
+              raise PaymentError('Your billing address did not validate')
           
           if 'address_line1' in card_data:
             data['address'] = card_data['address_line1']

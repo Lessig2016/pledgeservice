@@ -30,7 +30,7 @@ class ContactHandler(webapp2.RequestHandler):
     ascii_body = data["body"].encode('ascii', errors='ignore')
 
     replyto = '%s <%s>' % (ascii_name, ascii_email)
-    message = mail.EmailMessage(sender=('Lessig for President no-reply <noreply@%s.appspotmail.com>' %
+    message = mail.EmailMessage(sender=('Team Lessig no-reply <noreply@%s.appspotmail.com>' %
                                            model.Config.get().app_name),
                                 reply_to=replyto,
                                 subject=ascii_subject)

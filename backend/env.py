@@ -179,7 +179,7 @@ class MailSender(object):
 
 def _send_mail(to, subject, text_body, html_body, reply_to=None):
   """Deferred email task"""
-  sender = ('Lessig for President <noreply@%s.appspotmail.com>' %
+  sender = ('Team Lessig <noreply@%s.appspotmail.com>' %
             model.Config.get().app_name)
   message = mail.EmailMessage(sender=sender, subject=subject)
   message.to = to
