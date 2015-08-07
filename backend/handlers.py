@@ -197,6 +197,17 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
                              recurrence_period=data['recurrence_period'],
                              enddate=data['enddate']
                              )
+    if data['subscribe']:
+      env.mailing_list_subscriber.Subscribe(
+        email=data['email'],
+        first_name=first_name, last_name=last_name,
+        amount_cents=amountCents,
+        ip_addr=handler.request.remote_addr,
+        time=datetime.datetime.now(),
+        source='pledge',
+        phone=data['phone'],
+        nonce=user.url_nonce)
+        
     if False:
         model.addNationBuilderDonation(email=data['email'],
                              stripe_customer_id=stripe_customer_id,
@@ -226,16 +237,7 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
 			                 recurrence_period = data['recurrence_period'],
 			                 nationBuilderVars = data['nationBuilderVars']
                              )
-        if data['subscribe']:
-          env.mailing_list_subscriber.Subscribe(
-            email=data['email'],
-            first_name=first_name, last_name=last_name,
-            amount_cents=amountCents,
-            ip_addr=handler.request.remote_addr,
-            time=datetime.datetime.now(),
-            source='pledge',
-            phone=data['phone'],
-            nonce=user.url_nonce)
+        
             
     # Add to the total.
     model.ShardedCounter.increment('TOTAL-5', amountCents)
@@ -362,8 +364,11 @@ class PledgeHandler(webapp2.RequestHandler):
           if 'address_line1_check' in card_data:
             logging.info('Address check: %s' % card_data['address_line1_check'])
             if card_data['address_line1_check'] == 'fail':
-              raise PaymentError('Your billing address did not validate')
-          
+              logging.warning('Your billing address did not validate')
+              self.error(400)
+              json.dump(dict(paymentError='Your billing address did not validate'), self.response)              
+              return  # error trapping is not working in here, so have to do hacky early return for now
+              
           if 'address_line1' in card_data:
             data['address'] = card_data['address_line1']
             if card_data['address_line2']:
