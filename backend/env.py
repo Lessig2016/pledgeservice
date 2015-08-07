@@ -154,12 +154,12 @@ class MailchimpSubscriber(handlers.MailingListSubscriber):
                    volunteer, skills, rootstrikers, 
                    nonce, pledgePageSlug, otherVars)
                    
-      deferred.defer(_subscribe_to_nationbuilder,
-                     email, first_name, last_name,
-                     amount_cents, ip_addr, source, phone, zipcode,
-                     volunteer, skills, rootstrikers,
-                     nonce, pledgePageSlug, otherVars,
-                     is_supporter, nationBuilderVars)
+    deferred.defer(_subscribe_to_nationbuilder,
+                   email, first_name, last_name,
+                   amount_cents, ip_addr, source, phone, zipcode,
+                   volunteer, skills, rootstrikers,
+                   nonce, pledgePageSlug, otherVars,
+                   is_supporter, nationBuilderVars)
 
 class FakeSubscriber(handlers.MailingListSubscriber):
   def Subscribe(self, **kwargs):
