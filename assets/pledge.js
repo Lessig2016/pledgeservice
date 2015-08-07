@@ -315,9 +315,9 @@ $(document).ready(function() {
   var header = urlParams['header'] || '';
 
   //choose the frequency type
-  $('input[name=monthly]').on('click',function(){  
+  $('input[name=monthly]').click('click',function(){  
     console.log('set it');
-    $('#recurrence_period_input').val( $('input[name=monthly]').val() );
+    $('#recurrence_period_input').val( $('input[name=monthly]:checked').val() );
   });
 
   $('#email_input').val(passedEmail);
