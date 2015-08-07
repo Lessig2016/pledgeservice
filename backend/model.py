@@ -250,6 +250,7 @@ class TempPledge(db.Model):
   state = db.StringProperty()
   zipCode = db.StringProperty()
   bitcoinConfirm=db.BooleanProperty(required=False, default=False)
+  keep_donation=db.BooleanProperty(default=False)
 
   team = db.StringProperty()
   # all pledge_types for bitpay pledges must be "DONATION"
@@ -286,6 +287,8 @@ class Pledge(db.Model):
 
   # what the user is pledging for
   amountCents = db.IntegerProperty(required=True)
+  
+  keepDonation = db.BooleanProperty(default=False)
 
   # Enum for what kind of pledge this is, represented as a string for
   # readability. Valid values are:
@@ -327,7 +330,7 @@ class Pledge(db.Model):
   def create(email, stripe_customer_id, stripe_charge_id,
              paypal_payer_id, paypal_txn_id,
              amount_cents, pledge_type, team, anonymous, bitpay_invoice_id,
-	     recurring, recurrence_period, enddate
+	     recurring, recurrence_period, enddate, keep_donation
 	     ):
     assert pledge_type in Pledge.TYPE_VALUES
     pledge = Pledge(model_version=MODEL_VERSION,
@@ -344,7 +347,8 @@ class Pledge(db.Model):
                     bitpay_invoice_id=bitpay_invoice_id,
 		    recurring=recurring,
 		    end_date=enddate,
-		    recurrence_period=recurrence_period)
+		    recurrence_period=recurrence_period,
+            keep_donation=keep_donation)
     pledge.put()
     if team:
       TeamTotal.add(team, amount_cents)
@@ -417,7 +421,7 @@ def addPledge(email,
               paypal_txn_id=None, paypal_payer_id=None,
               address=None, city=None, state=None, zipCode=None,
               bitpay_invoice_id = None, recurring = None,
-	      recurrence_period = None, enddate = None):
+	      recurrence_period = None, enddate = None, keep_donation = None):
   """Creates a User model if one doesn't exist, finding one if one already
   does, using the email as a user key. Then adds a Pledge to the User with
   the given card token as a new credit card.
@@ -448,7 +452,8 @@ def addPledge(email,
                        bitpay_invoice_id = bitpay_invoice_id,
 		       recurring = recurring,
 		       enddate = enddate,
-		       recurrence_period = recurrence_period)
+		       recurrence_period = recurrence_period,
+               keep_donation = keep_donation)
 
 
 class WpPledge(db.Model):
@@ -466,6 +471,9 @@ class WpPledge(db.Model):
   target = db.StringProperty(required=False)
 
   url_nonce = db.StringProperty(required=True)
+  
+  keep_donation=db.BooleanProperty(default=False)
+  
 
 
 class ChargeStatus(db.Model):
