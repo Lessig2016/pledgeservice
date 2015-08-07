@@ -281,7 +281,7 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
                            html_body='<html><body>' + lessig_body + '</html></body>')
 
     id = str(pledge.key())
-    receipt_url = '/receipt/%s?auth_token=%s' % (id, pledge.url_nonce)
+    receipt_url = '?receipt&%s&auth_token=%s' % (id, pledge.url_nonce)
 
     return id, pledge.url_nonce, receipt_url
 
