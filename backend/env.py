@@ -153,12 +153,14 @@ class MailchimpSubscriber(handlers.MailingListSubscriber):
                    amount_cents, ip_addr, source, phone, zipcode,
                    volunteer, skills, rootstrikers, 
                    nonce, pledgePageSlug, otherVars)
-    deferred.defer(_subscribe_to_nationbuilder,
-                   email, first_name, last_name,
-                   amount_cents, ip_addr, source, phone, zipcode,
-                   volunteer, skills, rootstrikers,
-                   nonce, pledgePageSlug, otherVars,
-		   is_supporter, nationBuilderVars)
+                   
+    if nationbuilder_token:
+      deferred.defer(_subscribe_to_nationbuilder,
+                     email, first_name, last_name,
+                     amount_cents, ip_addr, source, phone, zipcode,
+                     volunteer, skills, rootstrikers,
+                     nonce, pledgePageSlug, otherVars,
+                     is_supporter, nationBuilderVars)
 
 class FakeSubscriber(handlers.MailingListSubscriber):
   def Subscribe(self, **kwargs):
@@ -197,6 +199,9 @@ def _subscribe_to_nationbuilder(email_to_subscribe, first_name, last_name,
                             nonce=None, pledgePageSlug=None, otherVars=None,
 			    is_supporter=None, nationBuilderVars=None):
   nationbuilder_token = model.Secrets.get().nationbuilder_token
+  if nationbuilder_token == '':
+    return
+    
   nation_slug = "mayday"
   access_token_url = "http://" + nation_slug + ".nationbuilder.com/oauth/token"
   authorize_url = nation_slug + ".nationbuilder.com/oauth/authorize"
@@ -255,7 +260,9 @@ def _subscribe_to_nationbuilder(email_to_subscribe, first_name, last_name,
       person['fundraising_email_subscription'] = merge13
     else:
       person['fundraising_email_subscription'] = 'Yes'
-  else: person['fundraising_email_subscription'] = 'Yes'
+  else: 
+    person['fundraising_email_subscription'] = 'Yes'
+    
   if nationBuilderVars:
     for key in nationBuilderVars.keys():
       person[key] = nationBuilderVars[key]
