@@ -334,7 +334,7 @@ class PledgeHandler(webapp2.RequestHandler):
             card_token=data['payment']['STRIPE']['token'], 
             recurrence_period=data['recurrence_period'],
             amount_dollars=data['amountCents']/100,
-            upsell=data.get('upsell'))
+            upsell=data.get('upsell', False))
 
         else:          
           logging.info('Trying to create stripe customer %s for a single donation' % data['email'])
