@@ -329,11 +329,12 @@ class PledgeHandler(webapp2.RequestHandler):
 
           if data.get('recurrence_period', None) == None:
             data['recurrence_period'] = 'monthly'
-          stripe_customer  = env.stripe_backend.CreateCustomerWithPlan(
+          stripe_customer = env.stripe_backend.CreateCustomerWithPlan(
             email=data['email'], 
             card_token=data['payment']['STRIPE']['token'], 
             recurrence_period=data['recurrence_period'],
-            amount_dollars=data['amountCents']/100)
+            amount_dollars=data['amountCents']/100,
+            upsell=(data.get('upsell') == True)
 
         else:          
           logging.info('Trying to create stripe customer %s for a single donation' % data['email'])

@@ -65,9 +65,11 @@ class ProdStripe(handlers.StripeBackend):
     return charge.id
     
   def CreateCustomerWithPlan(self, email, card_token, amount_dollars,
-    recurrence_period):
+    recurrence_period, upsell):
     stripe.api_key = self.stripe_private_key
-    if recurrence_period == "monthly":
+    if upsell:
+      plan = "recurring_upsell"
+    elif recurrence_period == "monthly":
       plan = "one_dollar_monthly"
     elif recurrence_period == "weekly":
       plan = "one_dollar_weekly"
