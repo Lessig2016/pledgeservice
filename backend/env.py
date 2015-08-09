@@ -85,6 +85,14 @@ class ProdStripe(handlers.StripeBackend):
 
     return customer
 
+  def UpsellCustomerToMonthlySubscription(self, stripe_customer_id, quantity):
+    stripe.api_key = self.stripe_private_key
+    customer = stripe.Customer.retrieve(stripe_customer_id)
+    customer.subscriptions.create(plan="one_dollar_monthly", 
+                                  quantity=quantity,
+                                  trial_end=datetime.datetime.now() + datetime.timedelta(days=30))
+                                  
+    return customer
 
 class FakeStripe(handlers.StripeBackend):
   def CreateCustomer(self, email, card_token):

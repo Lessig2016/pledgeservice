@@ -216,12 +216,13 @@ var createPledge = function(name, payment) {
   var recurrence_period = $('#recurrence_period_input').val() || null;
   var enddate = $('enddate_input').val() || null;
   var keep_donation = $('#keep_donation').prop('checked');
-  if ((!$("#requiredConfirmation").prop('checked')) && ('BITCOIN' in payment) ) {
+  
+  if (($("#requiredConfirmation").prop('checked') == false) && ('BITCOIN' in payment) ) {
     console.log('Trying to pay with BITCOIN without a confirmation') 
     return;
   }
   
-  var data = {
+  var pledge_data = {
     email: $('#email_input').val(),
     phone: $('#phone_input').val(),
     name: name,
@@ -229,68 +230,83 @@ var createPledge = function(name, payment) {
     employer: $('#employer_input').val(),
     target: $('#targeting_input').val(),
     subscribe: $('#emailSignupInput').is(':checked') ? true : false,
-    // anonymous: $scope.ctrl.form.anonymous,
     amountCents: getAmountCents(),
     pledgeType: pledgeType,
     team: urlParams['team'] || readCookie("last_team_key") || '',
     payment: payment
   };
   if (recurring) {
-    data['recurring'] = recurring;
+    pledge_data['recurring'] = recurring;
   }
   if(recurrence_period) {
-    data['recurrence_period'] = recurrence_period;
+    pledge_data['recurrence_period'] = recurrence_period;
   }
   if(enddate) {
-    data['enddate'] = enddate;
+    pledge_data['enddate'] = enddate;
   }
   if ($("#requiredConfirmation").is(':checked')) {
-    data['bitcoinConfirm'] = true;
+    pledge_data['bitcoinConfirm'] = true;
   }  
   
   if (firstName) {
-    data['firstName'] = firstName;
+    pledge_data['firstName'] = firstName;
   }
 
   if (lastName) {
-    data['lastName'] = lastName;
+    pledge_data['lastName'] = lastName;
   }
 
   if (address) {
-    data['address'] = address;
+    pledge_data['address'] = address;
   }
 
   if (zip) {
-    data['zip'] = zip;
+    pledge_data['zip'] = zip;
   }
 
   if (city) {
-    data['city'] = city;
+    pledge_data['city'] = city;
   }
 
   if (state) {
-    data['state'] = state;
+    pledge_data['state'] = state;
   }
   
-  data['keep_donation'] = keep_donation;
+  pledge_data['keep_donation'] = keep_donation;
   
-  $("input[name='thingname']").each(function(index) {
-    data[$(this).data()['nationbuildername']] =  $(this).val();
-  });
-
+  //CAB: we can probably delete the next three lines
+  //$("input[name='thingname']").each(function(index) {
+  //  data[$(this).data()['nationbuildername']] =  $(this).val();
+  //});
+  
   $.ajax({
       type: 'POST',
       url: request_url,
-      data: JSON.stringify(data),
+      data: JSON.stringify(pledge_data),
       contentType: "application/json",
       dataType: 'json',
-      success: function(data) {
-        if ('paypal_url' in data) {
-          location.href = data.paypal_url
-        } else if ('bitpay_url' in data) {
-          location.href = data.bitpay_url
+      success: function(response_data) {
+        if ('paypal_url' in response_data) {
+          location.href = response_data.paypal_url
+        } else if ('bitpay_url' in response_data) {
+          location.href = response_data.bitpay_url
         } else {
-          location.href = RECEIPT_URL + data.receipt_url + '&amount=' + data.pledge_amount + '&recurring=' + recurring;
+          location.href = RECEIPT_URL + response_data.receipt_url + 
+            '&full_name=' + name +
+            '&customer_id=' + response_data.customer_id +
+            '&amount=' + response_data.pledge_amount + 
+            '&email=' + encodeURIComponent(pledge_data['email']) +
+            '&phone=' + pledge_data['phone'] +
+            '&occupation=' + encodeURIComponent(pledge_data['occupation']) +
+            '&employer=' + encodeURIComponent(pledge_data['employer']) +
+            '&target=' + encodeURIComponent(pledge_data['target']) +
+            '&subscribe=' + pledge_data['subscribe'] +
+            '&amountCents=' + pledge_data['amountCents'] +
+            '&pledgeType=' + pledge_data['pledgeType'] +
+            '&team=' + encodeURIComponent(pledge_data['team']) +
+            '&card_token=' + response_data.card_token +
+            '&recurrence_period=' + pledge_data['recurrence_period'] +
+            '&keep_donation=' + pledge_data['keep_donation']
         }
       },
       error: function(data) {

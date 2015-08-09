@@ -320,20 +320,25 @@ class PledgeHandler(webapp2.RequestHandler):
 
     # Do any server-side processing the payment processor needs.
     stripe_customer = None
-    stripe_customer_id = None
+    stripe_customer_id = data.get('customer_id', None)
     stripe_charge_id = None
-    if 'STRIPE' in data['payment']:
+    
+    # upsell this customer's plan to a monthly subscription
+    if stripe_customer_id:
+      env.stripe_backend.UpsellCustomerToMonthlySubscription(stripe_customer_id, data['amountCents']/100)    
+    elif 'STRIPE' in data['payment']:
       try:
         if data.get('recurring', '') == True:
           logging.info('Trying to create stripe customer %s for a recurring donation' % data['email'])
 
           if data.get('recurrence_period', None) == None:
             data['recurrence_period'] = 'monthly'
+            
           stripe_customer = env.stripe_backend.CreateCustomerWithPlan(
             email=data['email'], 
             card_token=data['payment']['STRIPE']['token'], 
-            recurrence_period=data['recurrence_period'],
             amount_dollars=data['amountCents']/100,
+            recurrence_period=data['recurrence_period'],
             upsell=data.get('upsell', False))
 
         else:          
@@ -369,6 +374,7 @@ class PledgeHandler(webapp2.RequestHandler):
 
           logging.info('Trying to charge %s' % data['email'])
           stripe_charge_id = env.stripe_backend.Charge(stripe_customer_id, data['amountCents'])
+          data['stripe_customer_id'] = stripe_customer_id
           logging.info('Got charge id %s' % stripe_charge_id)
 
       except PaymentError, e:
@@ -388,7 +394,9 @@ class PledgeHandler(webapp2.RequestHandler):
                    auth_token=auth_token,
                    pledge_amount=data['amountCents']/100,
                    recurrence_period=data['recurrence_period'],
-                   receipt_url=receipt_url), self.response)
+                   receipt_url=receipt_url,
+                   card_token=stripe_charge_id,
+                   customer_id=stripe_customer_id), self.response)
 
 
   def options(self):
