@@ -200,6 +200,7 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
                              enddate=data['enddate'],
                              keep_donation=data['keep_donation']
                              )
+    logging.info('Added pledge to database')                         
     if data['subscribe']:
       env.mailing_list_subscriber.Subscribe(
         email=data['email'],
@@ -267,22 +268,7 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
                          subject='Thank you for your pledge',
                          text_body=text_body,
                          html_body=html_body)
-
-    if amountCents > 100000:
-      format_kwargs = {
-        'name': data['name'].encode('utf-8'),
-        'total': totalStr,
-        'phone': data['phone'],
-        'email': data['email'],
-      }
-
-      lessig_body = open('email/lessig-notify.txt').read().format(**format_kwargs)
-      logging.info('Sending ' + lessig_body)
-      env.mail_sender.Send(to='lessig@mac.com',
-                           subject='A donation for %s has come in from %s %s' % (totalStr, first_name, last_name),
-                           text_body=lessig_body,
-                           html_body='<html><body>' + lessig_body + '</html></body>')
-
+   
     id = str(pledge.key())
     receipt_url = '?receipt=%s&auth_token=%s' % (id, pledge.url_nonce)
 
@@ -396,6 +382,7 @@ class PledgeHandler(webapp2.RequestHandler):
 
     id, auth_token, receipt_url = pledge_helper(self, data, stripe_customer_id, stripe_charge_id, None, None)
 
+    logging.info('Pledge handler finished')
     json.dump(dict(id=id,
                    auth_token=auth_token,
                    pledge_amount=data['amountCents']/100,
