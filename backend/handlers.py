@@ -1096,6 +1096,5 @@ HANDLERS = [
   ('/r/paypal_start', PaypalStartHandler),
   ('/r/paypal_return', PaypalReturnHandler),
   ('/r/issue_polling', IssuePollingHandler),
-#  ('/r/candidate_polling', CandidatePollingHandler),
-#  ('/r/supporters', SupportersHandler),
+#  TODO: ('/r/candidate_polling', CandidatePollingHandler),
 ]
