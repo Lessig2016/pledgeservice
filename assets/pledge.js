@@ -330,8 +330,7 @@ $(document).ready(function() {
 
   //choose the frequency type
   $('input[name=monthly]').click('click',function(){  
-    console.log('set it');
-    $('#recurrence_period_input').val( $('input[name=monthly]:checked').val() );
+    $('#recurrence_period_input').val('monthly');
   });
 
   $('#email_input').val(passedEmail);
