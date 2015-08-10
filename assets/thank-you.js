@@ -52,7 +52,7 @@ var recurring_pledge = function() {
   });  
 };
 
-$(document).ready(function() {
+$(function() {
   if (getParameterByName('recurring') == 'false') {
     $('#ask-again-popup').show();
     $('#ask-again-overlay').show();
