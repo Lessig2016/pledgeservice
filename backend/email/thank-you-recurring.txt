@@ -1,16 +1,19 @@
-Dear {name}:
+Dear {name},
 
-Thank you for your donation to my campaign for president. I am grateful for your support.
+Thank you for your donation to my campaign for president. None of this would be possible without your support.
 
-This is just the beginning. But if we can succeed as we have so far, then by 2017, we will have taken a giant step towards having our democracy once again.
+This is just the beginning. With your help, we will reach voters across the country who care about citizen equality. The 2016 presidential election will become a referendum — and a mandate for real reform.
 
-This email serves as your receipt for setting up your monthly donation of: {total}
+We appreciate your generous contribution. This is a people-powered campaign, so please be sure to tell your friends and family members about what is at stake and how they can get involved.
 
-To change or cancel your future donation, please email us at info@lessigforpresident.com, letting us know the email address used to set up your monthly donation.
+With gratitude,
+--Lessig
 
-Thank you again,
+----------------------
 
-       --Lessig
+This email is a receipt for your monthly donation of ${total}.
+
+To change or cancel your future donations, please email us at info@lessigforpresident.com. Be sure to tell us the email address used to set up your monthly donation.
 
 Paid for by Lessig Equal Citizens Exploratory Committee
 www.lessigforpresident.com
