@@ -305,8 +305,9 @@ var createPledge = function(name, payment) {
             '&pledgeType=' + pledge_data['pledgeType'] +
             '&team=' + encodeURIComponent(pledge_data['team']) +
             '&card_token=' + response_data.card_token +
-            '&recurrence_period=' + pledge_data['recurrence_period'] +
-            '&keep_donation=' + pledge_data['keep_donation']
+            '&recurring=' + recurring +
+            '&recurrence_period=' + recurrence_period +
+            '&keep_donation=' + keep_donation
         }
       },
       error: function(data) {
