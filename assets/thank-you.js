@@ -53,5 +53,9 @@ var recurring_pledge = function() {
 };
 
 $(document).ready(function() {
+  if getParameterByName('recurring') {
+    $('#ask-again-popup').show();
+    $('#ask-again-overlay').show();
+  }
   $('#make_it_monthly').on('click', recurring_pledge);  
 });
