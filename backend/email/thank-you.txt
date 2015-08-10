@@ -10,7 +10,7 @@ With gratitude,
 --Lessig
 
 ----------------------
-This email is a receipt for your donation of ${total}.<br/><br/>
+This email is a receipt for your donation of {total}.<br/><br/>
 If you have any issues, please email us at info@lessigforpresident.com.<br/><br/>
 Paid for by Lessig Equal Citizens Exploratory Committee<br/><br/>
 <a href="http://www.lessigforpresident.com">www.lessigforpresident.com</a>
