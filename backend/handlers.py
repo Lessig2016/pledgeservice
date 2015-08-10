@@ -570,8 +570,8 @@ class NumPledgesHandler(webapp2.RequestHandler):
   def get(self):
     util.EnableCors(self)
 
-    WP_PLEDGES = 4099
-    VERSION_12_AND_UNDER = 59009 
+    WP_PLEDGES = 0
+    VERSION_12_AND_UNDER = 0 
 
     count = memcache.get('TOTAL-PLEDGES')
     if not count:
