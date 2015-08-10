@@ -654,7 +654,25 @@ class ShardedCounter(db.Model):
 
     cache.IncrementShardedCounterTotal(name, delta)
 
-
+class Issue(db.Model):
+  name = db.StringProperty(required=True)
+  count = db.IntegerProperty(required=False, default=1)
+  
+  @staticmethod
+  @db.transactional
+  def upsert(name):
+    name = name.strip().title()
+    issue = Issue.get_by_key_name(name)
+    if issue is None:
+      issue = Issue(model_version=MODEL_VERSION,
+                    key_name=name,
+                    name=name,
+                    count=1)
+    else:
+      issue.count += 1
+    issue.put()
+    return issue
+  
 # SECONDARY MODELS
 # ################
 # These models are used as caches for other parts of the data model,

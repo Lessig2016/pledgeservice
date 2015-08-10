@@ -1061,6 +1061,19 @@ class PaypalReturnHandler(webapp2.RequestHandler):
       self.response.write(pprint.pformat(results))
       return
 
+class IssuePollingHandler(webapp2.RequestHandler):
+  def get(self):
+    util.EnableCors(self)
+    self.response.headers['Content-Type'] = 'application/json' 
+    issues = {}
+    for issue in model.Issue.all():
+      issues[issue.name] = issue.count    
+    json.dump(dict(issues), self.response)
+
+  def post(self):
+    util.EnableCors(self)
+    for issue in json.loads(self.request.body):
+      model.Issue.upsert(issue)
 
 HANDLERS = [
   ('/r/leaderboard', LeaderboardHandler),
@@ -1076,4 +1089,7 @@ HANDLERS = [
   ('/r/bitcoin_notifications', BitcoinNotificationsHandler),
   ('/r/paypal_start', PaypalStartHandler),
   ('/r/paypal_return', PaypalReturnHandler),
+  ('/r/issue_polling', IssuePollingHandler),
+#  ('/r/candidate_polling', CandidatePollingHandler),
+#  ('/r/supporters', SupportersHandler),
 ]
