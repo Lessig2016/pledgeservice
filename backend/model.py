@@ -601,7 +601,7 @@ class StretchCheckTotal(db.Model):
 
 SHARD_KEY_TEMPLATE = 'shard-{}-{:d}'
 SHARD_COUNT = 50
-STRETCH_CACHE_MISS_TOTAL = 112742800
+STRETCH_CACHE_MISS_TOTAL = 0
 
 class ShardedCounter(db.Model):
   count = db.IntegerProperty(default=0)
