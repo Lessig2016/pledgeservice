@@ -212,7 +212,7 @@ var createPledge = function(name, payment) {
   var city = $('#city_input').val() || null;
   var state = $('#state_input').val() || null;
   var zip = $('#zip_input').val() || null;
-  var recurring = $("input[name=monthly][value=monthly]").prop('checked') ? true : false;
+  var recurring = $("input[name=monthly][value=yes]").prop('checked') ? true : false;
   var recurrence_period = $('#recurrence_period_input').val() || null;
   var enddate = $('enddate_input').val() || null;
   var keep_donation = $('#keep_donation').prop('checked');
@@ -228,7 +228,7 @@ var createPledge = function(name, payment) {
     name: name,
     occupation: $('#occupation_input').val(),
     employer: $('#employer_input').val(),
-    target: $('#targeting_input').val(),
+    target: $('#targeting_input').val(),      
     subscribe: $('#emailSignupInput').is(':checked') ? true : false,
     amountCents: getAmountCents(),
     pledgeType: pledgeType,
