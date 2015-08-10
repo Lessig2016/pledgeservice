@@ -325,7 +325,13 @@ class PledgeHandler(webapp2.RequestHandler):
     
     # upsell this customer's plan to a monthly subscription
     if stripe_customer_id:
-      env.stripe_backend.UpsellCustomerToMonthlySubscription(stripe_customer_id, data['amountCents']/100)    
+      try:
+        env.stripe_backend.UpsellCustomerToMonthlySubscription(stripe_customer_id, data['amountCents']/100)    
+      except PaymentError, e:
+        logging.warning('Payment error: %s', e)
+        self.error(400)
+        json.dump(dict(paymentError=str(e)), self.response)
+        return
     elif 'STRIPE' in data['payment']:
       try:
         if data.get('recurring', '') == True:
