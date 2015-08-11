@@ -1058,15 +1058,13 @@ class IssuePollingHandler(webapp2.RequestHandler):
   def get(self):
     util.EnableCors(self)
     self.response.headers['Content-Type'] = 'application/json' 
-    issues = {}
-    for issue in model.Issue.all():
-      issues[issue.name] = issue.count    
-    json.dump(dict(issues), self.response)
+    json.dump(dict({}), self.response) #TODO
 
   def post(self):
     util.EnableCors(self)
-    for issue in json.loads(self.request.body):
-      model.Issue.upsert(issue)
+    email, issues = json.loads(self.request.body).popitem()
+    for issue in issues:
+      model.IssueVote.tally(email, issue)
 
 HANDLERS = [
   ('/r/leaderboard', LeaderboardHandler),

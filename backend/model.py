@@ -672,6 +672,17 @@ class Issue(db.Model):
       issue.count += 1
     issue.put()
     return issue
+
+class IssueVote(db.Model):
+  email = db.StringProperty(required=True)
+  name = db.StringProperty(required=True)
+
+  @staticmethod
+  @db.transactional
+  def tally(email, name):
+    IssueVote(model_version=MODEL_VERSION,
+              email=email,
+              name=name.strip().title()).put()
   
 # SECONDARY MODELS
 # ################
