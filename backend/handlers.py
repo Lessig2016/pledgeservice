@@ -101,7 +101,7 @@ PLEDGE_SCHEMA = dict(
     surveyResult=_STR_optional,
     subscribe=dict(type='boolean'),
     anonymous=dict(type='boolean', required=False),
-    amountCents=dict(type='integer', minimum=100),
+    amountCents=dict(type='integer', minimum=100, maximum=540000),
     pledgeType=dict(enum=model.Pledge.TYPE_VALUES, required=False),
     team=dict(type='string', blank=True),
     recurrence_period=dict(type='string', required=False, enum=valid_recurrence_periods),
