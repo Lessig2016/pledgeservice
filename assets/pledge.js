@@ -91,8 +91,8 @@ var validateForm = function() {
       showError( "Please enter an amount of $1 or more");
       return false;
     } else if (amount > 5400) {
-		showError( "Please enter an amount less than $5400");
-        return false;
+		  showError( "Please enter an amount less than $5400");
+      return false;
 	}
 	
 	if (!$('#accept-rules').is(':checked') )
