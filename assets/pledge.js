@@ -324,10 +324,15 @@ var createPledge = function(name, payment) {
       },
       error: function(data) {
         setLoading(false);
-        responseJSON = data.responseJSON || null
-        
+        responseJSON = data.responseJSON || null        
         if (responseJSON && ('paymentError' in responseJSON)) {
           showError("We're having trouble charging your card: " + responseJSON.paymentError);
+        } else if ('validationError' in responseJSON) {
+          if (responseJSON['validationError'].indexOf('maximum') > 0) {
+            showError("The donation amount cannot exceed $5,400 per person");
+          } else {
+            showError(responseJSON['validationError']);
+          }
         } else {
           $('#formError').text('Oops, something went wrong. Try again in a few minutes');
           $('#formError').show();

@@ -301,7 +301,7 @@ class PledgeHandler(webapp2.RequestHandler):
       except:
         pass
       self.error(400)
-      self.response.write('Invalid request')
+      json.dump(dict(validationError=str(e)), self.response)
       return
 
     # Do any server-side processing the payment processor needs.
