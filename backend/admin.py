@@ -355,6 +355,8 @@ def build_pledge_dict(pledge):
     'Plege url_nonce': pledge.url_nonce,
     'Payer Identifier': payer,
     'Email': pledge.email,
+    'Type': pledge.pledge_type,
+    'Recurring': pledge.recurring
   }
 
   # add user info
