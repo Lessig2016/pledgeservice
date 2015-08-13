@@ -81,7 +81,7 @@ class MailingListSubscriber(object):
   """Interface which signs folks up for emails."""
   def Subscribe(self, email, first_name, last_name, amount_cents, ip_addr, time,
                 source, phone=None, zipcode=None, volunteer=None, skills=None,
-                rootstrikers=None, nonce=None, pledgePageSlug=None):
+                rootstrikers=None, nonce=None, pledgePageSlug=None, recurring=None):
     raise NotImplementedError()
 
 
@@ -210,7 +210,8 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
         time=datetime.datetime.now(),
         source='pledge',
         phone=data['phone'],
-        nonce=user.url_nonce)
+        nonce=user.url_nonce,
+        recurring=data['recurring'])
         
     if False:
         model.addNationBuilderDonation(email=data['email'],
