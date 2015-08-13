@@ -684,6 +684,17 @@ class IssueVote(db.Model):
               email=email,
               name=name.strip().title()).put()
   
+class CandidateVote(db.Model):
+  email = db.StringProperty(required=True)
+  name = db.StringProperty(required=True)
+
+  @staticmethod
+  @db.transactional
+  def tally(email, name):
+    CandidateVote(model_version=MODEL_VERSION,
+                  email=email,
+                  name=name.strip().title()).put()
+  
 # SECONDARY MODELS
 # ################
 # These models are used as caches for other parts of the data model,

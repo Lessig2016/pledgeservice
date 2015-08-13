@@ -1059,13 +1059,25 @@ class IssuePollingHandler(webapp2.RequestHandler):
   def get(self):
     util.EnableCors(self)
     self.response.headers['Content-Type'] = 'application/json' 
-    json.dump(dict({}), self.response) #TODO
+    json.dump(dict({}), self.response) #TODO -- return something sensible
 
   def post(self):
     util.EnableCors(self)
     email, issues = json.loads(self.request.body).popitem()
     for issue in issues:
       model.IssueVote.tally(email, issue)
+
+class CandidatePollingHandler(webapp2.RequestHandler):
+  def get(self):
+    util.EnableCors(self)
+    self.response.headers['Content-Type'] = 'application/json' 
+    json.dump(dict({}), self.response) #TODO -- return something sensible   
+
+  def post(self):
+    util.EnableCors(self)
+    email, candidates = json.loads(self.request.body).popitem()
+    for candidate in candidates:
+      model.CandidateVote.tally(email, candidate)
 
 HANDLERS = [
   ('/r/leaderboard', LeaderboardHandler),
@@ -1082,5 +1094,5 @@ HANDLERS = [
   ('/r/paypal_start', PaypalStartHandler),
   ('/r/paypal_return', PaypalReturnHandler),
   ('/r/issue_polling', IssuePollingHandler),
-#  TODO: ('/r/candidate_polling', CandidatePollingHandler),
+  ('/r/candidate_polling', CandidatePollingHandler),
 ]
