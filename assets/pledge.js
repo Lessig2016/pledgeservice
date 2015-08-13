@@ -70,7 +70,14 @@ var validateForm = function() {
     var occ = $('#occupation_input').val() || null;
     var emp = $('#employer_input').val() || null;
     var amount = $('#amount_input').val() || null;
-
+    
+	if (!$('#accept-rules').is(':checked') )
+	{
+		$('#pledgeButton').prop('disabled',true);
+		$('label.rules').addClass('highlight-checkbox');
+		
+		return false;
+	}
 
     if (!email) {
       showError( "Please enter email");
@@ -93,14 +100,6 @@ var validateForm = function() {
     } else if (amount > 5400) {
 		showError( "Please enter an amount less than $5400");
         return false;
-	}
-	
-	if (!$('#accept-rules').is(':checked') )
-	{
-		$('#pledgeButton').prop('disabled',true);
-		$('label.rules').addClass('highlight-checkbox');
-		
-		return false;
 	}
 
     return true;
