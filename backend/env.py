@@ -157,12 +157,12 @@ class MailchimpSubscriber(handlers.MailingListSubscriber):
   def Subscribe(self, email, first_name, last_name, amount_cents, ip_addr, time,
                 source, phone=None, zipcode=None, volunteer=None, skills=None, rootstrikers=None,
                 nonce=None, pledgePageSlug=None, otherVars = None,
-		is_supporter=None, nationBuilderVars=None):
+		is_supporter=None, nationBuilderVars=None, recurring=None):
     deferred.defer(_subscribe_to_mailchimp,
                    email, first_name, last_name,
                    amount_cents, ip_addr, source, phone, zipcode,
                    volunteer, skills, rootstrikers, 
-                   nonce, pledgePageSlug, otherVars)
+                   nonce, pledgePageSlug, otherVars, recurring)
                    
     deferred.defer(_subscribe_to_nationbuilder,
                    email, first_name, last_name,
@@ -288,7 +288,7 @@ def _subscribe_to_nationbuilder(email_to_subscribe, first_name, last_name,
 def _subscribe_to_mailchimp(email_to_subscribe, first_name, last_name,
                             amount, request_ip, source, phone=None, zipcode=None,
                             volunteer=None, skills=None, rootstrikers=None,
-                            nonce=None, pledgePageSlug=None, otherVars=None):
+                            nonce=None, pledgePageSlug=None, otherVars=None, recurring=None):
   mailchimp_api_key = model.Config.get().mailchimp_api_key
   mailchimp_list_id = model.Config.get().mailchimp_list_id
 
@@ -331,6 +331,9 @@ def _subscribe_to_mailchimp(email_to_subscribe, first_name, last_name,
     
   if otherVars is not None:
     merge_vars.update(otherVars)
+    
+  if recurring is not None:
+    merge_vars['RECURRING'] = recurring
 
   # list ID and email struct
   logging.info('Subscribing: %s. Merge_vars: %s', email_to_subscribe, str(merge_vars))
