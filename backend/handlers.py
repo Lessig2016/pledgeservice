@@ -81,7 +81,7 @@ class MailingListSubscriber(object):
   """Interface which signs folks up for emails."""
   def Subscribe(self, email, first_name, last_name, amount_cents, ip_addr, time,
                 source, phone=None, zipcode=None, volunteer=None, skills=None,
-                rootstrikers=None, nonce=None, pledgePageSlug=None):
+                rootstrikers=None, nonce=None, pledgePageSlug=None, recurring=None):
     raise NotImplementedError()
 
 
@@ -101,7 +101,7 @@ PLEDGE_SCHEMA = dict(
     surveyResult=_STR_optional,
     subscribe=dict(type='boolean'),
     anonymous=dict(type='boolean', required=False),
-    amountCents=dict(type='integer', minimum=100),
+    amountCents=dict(type='integer', minimum=100, maximum=540000),
     pledgeType=dict(enum=model.Pledge.TYPE_VALUES, required=False),
     team=dict(type='string', blank=True),
     recurrence_period=dict(type='string', required=False, enum=valid_recurrence_periods),
@@ -210,7 +210,8 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
         time=datetime.datetime.now(),
         source='pledge',
         phone=data['phone'],
-        nonce=user.url_nonce)
+        nonce=user.url_nonce,
+        recurring=data['recurring'])
         
     if False:
         model.addNationBuilderDonation(email=data['email'],
@@ -301,7 +302,7 @@ class PledgeHandler(webapp2.RequestHandler):
       except:
         pass
       self.error(400)
-      self.response.write('Invalid request')
+      json.dump(dict(validationError=str(e)), self.response)
       return
 
     # Do any server-side processing the payment processor needs.
@@ -1058,13 +1059,25 @@ class IssuePollingHandler(webapp2.RequestHandler):
   def get(self):
     util.EnableCors(self)
     self.response.headers['Content-Type'] = 'application/json' 
-    json.dump(dict({}), self.response) #TODO
+    json.dump(dict({}), self.response) #TODO -- return something sensible
 
   def post(self):
     util.EnableCors(self)
     email, issues = json.loads(self.request.body).popitem()
     for issue in issues:
       model.IssueVote.tally(email, issue)
+
+class CandidatePollingHandler(webapp2.RequestHandler):
+  def get(self):
+    util.EnableCors(self)
+    self.response.headers['Content-Type'] = 'application/json' 
+    json.dump(dict({}), self.response) #TODO -- return something sensible   
+
+  def post(self):
+    util.EnableCors(self)
+    email, candidates = json.loads(self.request.body).popitem()
+    for candidate in candidates:
+      model.CandidateVote.tally(email, candidate)
 
 HANDLERS = [
   ('/r/leaderboard', LeaderboardHandler),
@@ -1081,5 +1094,5 @@ HANDLERS = [
   ('/r/paypal_start', PaypalStartHandler),
   ('/r/paypal_return', PaypalReturnHandler),
   ('/r/issue_polling', IssuePollingHandler),
-#  TODO: ('/r/candidate_polling', CandidatePollingHandler),
+  ('/r/candidate_polling', CandidatePollingHandler),
 ]

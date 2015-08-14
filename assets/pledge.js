@@ -70,7 +70,14 @@ var validateForm = function() {
     var occ = $('#occupation_input').val() || null;
     var emp = $('#employer_input').val() || null;
     var amount = $('#amount_input').val() || null;
-
+    
+	if (!$('#accept-rules').is(':checked') )
+	{
+		$('#pledgeButton').prop('disabled',true);
+		$('label.rules').addClass('highlight-checkbox');
+		
+		return false;
+	}
 
     if (!email) {
       showError( "Please enter email");
@@ -91,16 +98,8 @@ var validateForm = function() {
       showError( "Please enter an amount of $1 or more");
       return false;
     } else if (amount > 5400) {
-		showError( "Please enter an amount less than $5400");
-        return false;
-	}
-	
-	if (!$('#accept-rules').is(':checked') )
-	{
-		$('#pledgeButton').prop('disabled',true);
-		$('label.rules').addClass('highlight-checkbox');
-		
-		return false;
+		  showError( "Please enter an amount less than $5400");
+      return false;
 	}
 
     return true;
@@ -324,10 +323,15 @@ var createPledge = function(name, payment) {
       },
       error: function(data) {
         setLoading(false);
-        responseJSON = data.responseJSON || null
-        
+        responseJSON = data.responseJSON || null        
         if (responseJSON && ('paymentError' in responseJSON)) {
           showError("We're having trouble charging your card: " + responseJSON.paymentError);
+        } else if ('validationError' in responseJSON) {
+          if (responseJSON['validationError'].indexOf('maximum') > 0) {
+            showError("The donation amount cannot exceed $5,400 per person");
+          } else {
+            showError(responseJSON['validationError']);
+          }
         } else {
           $('#formError').text('Oops, something went wrong. Try again in a few minutes');
           $('#formError').show();

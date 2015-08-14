@@ -345,10 +345,10 @@ class Pledge(db.Model):
                     url_nonce=os.urandom(32).encode("hex"),
                     anonymous=anonymous,
                     bitpay_invoice_id=bitpay_invoice_id,
-		    recurring=recurring,
-		    end_date=enddate,
-		    recurrence_period=recurrence_period,
-            keep_donation=keep_donation)
+        		    recurring=recurring,
+        		    end_date=enddate,
+        		    recurrence_period=recurrence_period,
+                    keep_donation=keep_donation)
     pledge.put()
     if team:
       TeamTotal.add(team, amount_cents)
@@ -683,6 +683,17 @@ class IssueVote(db.Model):
     IssueVote(model_version=MODEL_VERSION,
               email=email,
               name=name.strip().title()).put()
+  
+class CandidateVote(db.Model):
+  email = db.StringProperty(required=True)
+  name = db.StringProperty(required=True)
+
+  @staticmethod
+  @db.transactional
+  def tally(email, name):
+    CandidateVote(model_version=MODEL_VERSION,
+                  email=email,
+                  name=name.strip().title()).put()
   
 # SECONDARY MODELS
 # ################
