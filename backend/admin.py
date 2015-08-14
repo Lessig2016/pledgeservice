@@ -157,8 +157,9 @@ def full_pledge_data(pledge,user):
     user.occupation,
     user.employer,
     user.target or 'Whatever Helps',
+    pledge.pledge_type,
+    pledge.recurring
   ]
-
 
 
 def generate_pledges_csv(file_name, pledge_type, pledge_time, full_data=False):
@@ -172,7 +173,7 @@ def generate_pledges_csv(file_name, pledge_type, pledge_time, full_data=False):
     if full_data:
       headers = ['SOURCE', 'donationTime', 'Amount ($)', 'url_nonce', 'stripeCustomer',
         'Email', 'First Name', 'Last Name', 'Address', 'Address 2', 'City', 'State',
-        'Zip', 'Country', 'Occupation', 'Employer', 'Targeting']
+        'Zip', 'Country', 'Occupation', 'Employer', 'Targeting', 'Type', 'Recurring']
     else:
       headers = ['zip', 'dollars', 'timestamp', 'date', 'city', 'state', 'latitude',
         'longitude']
