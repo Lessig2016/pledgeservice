@@ -1068,6 +1068,12 @@ class IssuePollingHandler(webapp2.RequestHandler):
       model.IssueVote.tally(email, issue)
 
 class CandidatePollingHandler(webapp2.RequestHandler):
+  def options(self):
+    self.response.headers['Access-Control-Allow-Origin'] = '*'
+    self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
+    self.response.headers['Access-Control-Max-Age'] = '1000'
+    self.response.headers['Access-Control-Allow-Headers'] = 'origin, x-csrftoken, content-type, accept'
+    
   def get(self):
     util.EnableCors(self)
     self.response.headers['Content-Type'] = 'application/json' 
