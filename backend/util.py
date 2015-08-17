@@ -20,11 +20,12 @@ def EnableCors(handler):
     origin = handler.request.headers['Origin']
     _, netloc, _, _, _, _ = urlparse.urlparse(origin)
     if not (handler.app.config['env'].app_name == 'local' or
-            netloc == 'mayone.us' or netloc.endswith('.mayone.us') or
-            netloc == 'mayday.us' or netloc.endswith('.mayday.us') or 
             netloc == 'localhost' or netloc.endswith('localhost') or
+            # Allow all localhost ports
+            # The ':' is needed to block 'localhost-xyz.com'
             netloc.startswith('localhost:') or
             netloc == 'lessig-team.appspot.com' or
+            netloc == 'lessig-trust-test.appspot.com' or
             netloc == 'lessig-trust.appspot.com' or 
             netloc.endswith('lessigforpresident.com') or
             '104.131.9.3' in netloc):
