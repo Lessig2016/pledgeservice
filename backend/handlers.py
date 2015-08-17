@@ -212,8 +212,7 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
         phone=data['phone'],
         nonce=user.url_nonce,
         recurring=data['recurring'],
-        zipcode=data['zipCode'],
-        phone=data['phone']
+        zipcode=data['zipCode']
       )
         
     if False:
