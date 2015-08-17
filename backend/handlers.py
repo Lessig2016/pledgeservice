@@ -21,6 +21,7 @@ import webapp2
 
 import cache
 import model
+from model import StretchCheckTotal
 import templates
 import util
 
@@ -170,7 +171,7 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
     if not 'keep_donation' in data:
       data['keep_donation'] = False
     if not 'pledge_fulfillment' in data:
-      data['pledge_fulfillment'] = False
+      data['pledge_fulfillment'] = False    
 
     amountCents = data['amountCents']
 
@@ -250,8 +251,9 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
             
     
     if data['pledge_fulfillment']: # Remove from stretch total.
+      logging.info('Removing from stretch total: $%d' % int(amountCents / 100))
       stretchTotal = StretchCheckTotal.get()
-      StretchCheckTotal.update( stretchTotal -  int(amountCents / 100) )
+      StretchCheckTotal.update( stretchTotal - amountCents)
     
     # Add to the total.
     model.ShardedCounter.increment('TOTAL-5', amountCents)
