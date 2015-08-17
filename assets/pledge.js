@@ -28,6 +28,8 @@ limitations under the License.
 //   BE CAREFUL WITH THIS FILE. IT IS INCLUDED IN teams and website repositories
 // ******************************************************************************
 
+var pledge_fulfillment = false;
+  
 var getUrlParams = function() {
   var match,
   pl     = /\+/g,  // Regex for replacing addition symbol with a space
@@ -283,6 +285,10 @@ var createPledge = function(name, payment) {
     pledge_data['state'] = state;
   }
   
+  if (pledge_fulfillment) {
+    pledge_data['pledge_fulfillment'] = pledge_fulfillment;
+  }
+  
   pledge_data['keep_donation'] = keep_donation;
   
   //CAB: we can probably delete the next three lines
@@ -344,6 +350,7 @@ $(document).ready(function() {
   var urlParams = getUrlParams();
   var passedEmail = urlParams['email'] || '';
   var header = urlParams['header'] || '';
+  pledge_fulfillment = urlParams['pledge_fulfillment'] || false;
 
   //choose the frequency type
   $('input[name=monthly]').click('click',function(){  

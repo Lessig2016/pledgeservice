@@ -169,6 +169,8 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
       data['nationBuilderVars'] = None
     if not 'keep_donation' in data:
       data['keep_donation'] = False
+    if not 'pledge_fulfillment' in data:
+      data['pledge_fulfillment'] = False
 
     amountCents = data['amountCents']
 
@@ -245,6 +247,11 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
                              )
         
             
+    
+    if data['pledge_fulfillment']: # Remove from stretch total.
+      stretchTotal = StretchCheckTotal.get()
+      StretchCheckTotal.update( stretchTotal -  int(amountCents / 100) )
+    
     # Add to the total.
     model.ShardedCounter.increment('TOTAL-5', amountCents)
 
