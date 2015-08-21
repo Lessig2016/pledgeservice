@@ -146,9 +146,10 @@ class UserInfoHandler(webapp2.RequestHandler):
     stripe.api_key = env.get_env().stripe_backend.stripe_private_key
     if biggest_pledge.stripeCustomer:
       cus = stripe.Customer.retrieve(biggest_pledge.stripeCustomer)
-      if len(cus.cards.data) > 0:
-        cc_user_name = cus.cards.data[0].name
-        cc_zip_code = cus.cards.data[0].address_zip
+
+      if len(cus.sources.data) > 0:
+        cc_user_name = cus.sources.data[0].name
+        cc_zip_code = cus.sources.data[0].address_zip
 
     if user.first_name or user.last_name:
       # TODO(jt): we should backfill this information
