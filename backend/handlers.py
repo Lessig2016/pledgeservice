@@ -282,9 +282,9 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
                          html_body=html_body)
    
     id = str(pledge.key())
-    receipt_url = '?receipt=%s&auth_token=%s' % (id, pledge.url_nonce)
+    receipt_url = '?receipt=%s&auth_token=%s&uut=%s' % (id, pledge.url_nonce, user.url_nonce)
 
-    return id, pledge.url_nonce, receipt_url
+    return id, pledge.url_nonce, user.url_nonce, receipt_url
 
 
 class PledgeHandler(webapp2.RequestHandler):
@@ -392,11 +392,12 @@ class PledgeHandler(webapp2.RequestHandler):
       self.error(400)
       return
 
-    id, auth_token, receipt_url = pledge_helper(self, data, stripe_customer_id, stripe_charge_id, None, None)
+    id, auth_token, uut, receipt_url = pledge_helper(self, data, stripe_customer_id, stripe_charge_id, None, None)
 
     logging.info('Pledge handler finished')
     json.dump(dict(id=id,
                    auth_token=auth_token,
+                   uut=uut,
                    pledge_amount=data['amountCents']/100,
                    recurrence_period=data['recurrence_period'],
                    receipt_url=receipt_url,
@@ -921,7 +922,7 @@ class BitcoinNotificationsHandler(webapp2.RequestHandler):
       logging.warning('bitpay confirmed amount is different')
 
 
-    id, auth_token, receipt_url = pledge_helper(self, temp_pledge_data, None,
+    id, auth_token, uut, receipt_url = pledge_helper(self, temp_pledge_data, None,
       None, None, None)
 
     temp_pledge.pledge_id = id
@@ -1057,7 +1058,7 @@ class PaypalReturnHandler(webapp2.RequestHandler):
         if 'SHIPTOZIP' in txn_data:
           data['zipCode'] = txn_data['SHIPTOZIP'][0]
 
-      id, auth_token, receipt_url = pledge_helper(self, data, None, None, payer_id, results['PAYMENTINFO_0_TRANSACTIONID'][0])
+      id, auth_token, uut, receipt_url = pledge_helper(self, data, None, None, payer_id, results['PAYMENTINFO_0_TRANSACTIONID'][0])
       self.redirect(receipt_url)
 
     else:
