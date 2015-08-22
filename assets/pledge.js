@@ -312,7 +312,7 @@ var createPledge = function(name, payment) {
           location.href = response_data.paypal_url;
         } else if ('bitpay_url' in response_data) {
 
-          ga('send', 'event', 'Pledge', 'Bitcoint_Payment_Success', pledge_data['email'], 1 );
+          ga('send', 'event', 'Pledge', 'Bitcoin_Payment_Success', pledge_data['email'], 1 );
           location.href = response_data.bitpay_url;
         } else {
 
