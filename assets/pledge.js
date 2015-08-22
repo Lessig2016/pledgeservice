@@ -306,17 +306,17 @@ var createPledge = function(name, payment) {
       dataType: 'json',
       success: function(response_data) {
         if ('paypal_url' in response_data) {
-          
+
           //paypal success
-          ga('send', 'event', 'Pledge', 'Paypal Payment Success', 'Email', pledge_data['email'] );
+          ga('send', 'event', 'Pledge', 'Paypal_Payment_Success', 'Email', pledge_data['email'] );
           location.href = response_data.paypal_url;
         } else if ('bitpay_url' in response_data) {
 
-          ga('send', 'event', 'Pledge', 'Bitcoint Payment Success', 'Email', pledge_data['email'] );
+          ga('send', 'event', 'Pledge', 'Bitcoint_Payment_Success', 'Email', pledge_data['email'] );
           location.href = response_data.bitpay_url;
         } else {
 
-          ga('send', 'event', 'Pledge', 'Stripe Payment Success', 'Email', pledge_data['email'] );
+          ga('send', 'event', 'Pledge', 'Stripe_Payment_Success', 'Email', pledge_data['email'] );
 
           //stripe success
           location.href = RECEIPT_URL + response_data.receipt_url + 
