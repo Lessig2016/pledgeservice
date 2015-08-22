@@ -308,15 +308,15 @@ var createPledge = function(name, payment) {
         if ('paypal_url' in response_data) {
 
           //paypal success
-          ga('send', 'event', 'Pledge', 'Paypal_Payment_Success', 'Email', pledge_data['email'] );
+          ga('send', 'event', 'Pledge', 'Paypal_Payment_Success', pledge_data['email'], 1 );
           location.href = response_data.paypal_url;
         } else if ('bitpay_url' in response_data) {
 
-          ga('send', 'event', 'Pledge', 'Bitcoint_Payment_Success', 'Email', pledge_data['email'] );
+          ga('send', 'event', 'Pledge', 'Bitcoint_Payment_Success', pledge_data['email'], 1 );
           location.href = response_data.bitpay_url;
         } else {
 
-          ga('send', 'event', 'Pledge', 'Stripe_Payment_Success', 'Email', pledge_data['email'] );
+          ga('send', 'event', 'Pledge', 'Stripe_Payment_Success', pledge_data['email'], 1 );
 
           //stripe success
           location.href = RECEIPT_URL + response_data.receipt_url + 
