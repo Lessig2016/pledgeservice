@@ -158,6 +158,7 @@ var bitcoinPledge = function() {
 var paypalPledge = function() {
     if (validateForm()) {
         setLoading(true);
+        $('#pledgeButton').toggleClass('disabled');
         createPledge("Paypal", { PAYPAL: { step : 'start' } });
     }
     return false;
@@ -304,7 +305,6 @@ var createPledge = function(name, payment) {
       dataType: 'json',
       success: function(response_data) {
         if ('paypal_url' in response_data) {
-          $('#pledgeButton').prop('disabled',true);
           location.href = response_data.paypal_url;
         } else if ('bitpay_url' in response_data) {
           location.href = response_data.bitpay_url;
