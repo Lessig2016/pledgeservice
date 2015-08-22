@@ -158,6 +158,7 @@ var bitcoinPledge = function() {
 var paypalPledge = function() {
     if (validateForm()) {
         setLoading(true);
+        $('#pledgeButton').prop('disabled',true);
         createPledge("Paypal", { PAYPAL: { step : 'start' } });
     }
     return false;
@@ -304,9 +305,9 @@ var createPledge = function(name, payment) {
       dataType: 'json',
       success: function(response_data) {
         if ('paypal_url' in response_data) {
-          location.href = response_data.paypal_url
+          location.href = response_data.paypal_url;
         } else if ('bitpay_url' in response_data) {
-          location.href = response_data.bitpay_url
+          location.href = response_data.bitpay_url;
         } else {
           location.href = RECEIPT_URL + response_data.receipt_url + 
             '&full_name=' + name +
