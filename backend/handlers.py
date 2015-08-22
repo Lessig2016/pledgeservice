@@ -1061,7 +1061,7 @@ class PaypalReturnHandler(webapp2.RequestHandler):
       id, auth_token, uut, receipt_url = pledge_helper(self, data, None, None, payer_id, results['PAYMENTINFO_0_TRANSACTIONID'][0])
       logging.info('Paypal Pledge handler finished')
       #forcing recurring true for paypal
-      self.redirect("https://lessigforpresident.com/thank-you-test/?amountCents=" + str(data['amountCents']) + '&recurring=true');
+      self.redirect("https://lessigforpresident.com/thank-you/?amountCents=" + str(data['amountCents']) + '&recurring=true');
 
     else:
       self.error(400);
