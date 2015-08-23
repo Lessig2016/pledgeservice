@@ -158,6 +158,7 @@ var bitcoinPledge = function() {
 var paypalPledge = function() {
     if (validateForm()) {
         setLoading(true);
+        $('#pledgeButton').toggleClass('disabled');
         createPledge("Paypal", { PAYPAL: { step : 'start' } });
     }
     return false;
@@ -212,6 +213,7 @@ var createPledge = function(name, payment) {
   if ('BITCOIN' in payment) {
       request_url = PLEDGE_URL + '/r/bitcoin_start';
   }
+
   // ALL PAYPAL PAYMENTS AND BITCOIN PAYMENTS ARE DONATIONS
   if($("#directDonate_input").is(':checked') || ('PAYPAL' in payment) || ('BITCOIN' in payment) ) {
     pledgeType = 'DONATION';
@@ -295,7 +297,7 @@ var createPledge = function(name, payment) {
   //$("input[name='thingname']").each(function(index) {
   //  data[$(this).data()['nationbuildername']] =  $(this).val();
   //});
-  
+
   $.ajax({
       type: 'POST',
       url: request_url,
@@ -304,10 +306,19 @@ var createPledge = function(name, payment) {
       dataType: 'json',
       success: function(response_data) {
         if ('paypal_url' in response_data) {
-          location.href = response_data.paypal_url
+
+          //paypal success
+          ga('send', 'event', 'Pledge', 'Paypal_Payment_Success', pledge_data['email'], 1 );
+          location.href = response_data.paypal_url;
         } else if ('bitpay_url' in response_data) {
-          location.href = response_data.bitpay_url
+
+          ga('send', 'event', 'Pledge', 'Bitcoin_Payment_Success', pledge_data['email'], 1 );
+          location.href = response_data.bitpay_url;
         } else {
+
+          ga('send', 'event', 'Pledge', 'Stripe_Payment_Success', pledge_data['email'], 1 );
+
+          //stripe success
           location.href = RECEIPT_URL + response_data.receipt_url + 
             '&full_name=' + name +
             '&customer_id=' + response_data.customer_id +
