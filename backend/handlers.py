@@ -255,12 +255,17 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
       stretchTotal = StretchCheckTotal.get()
       StretchCheckTotal.update( stretchTotal - amountCents)
     
-    # Add to the total.
-    model.ShardedCounter.increment('TOTAL-5', amountCents)
+    # Add to the total, adjusting 6x for recurring    
+    amountRecurring = amountCents
+    if data['recurring'] == True:    
+      amountRecurring = amountCents * 6
+      
+    model.ShardedCounter.increment('TOTAL-5', amountRecurring)
+    
 
     if data['team']:
       cache.IncrementTeamPledgeCount(data['team'], 1)
-      cache.IncrementTeamTotal(data['team'], amountCents)
+      cache.IncrementTeamTotal(data['team'], amountRecurring)
 
     totalStr = '$%d' % int(amountCents / 100)
     format_kwargs = {
