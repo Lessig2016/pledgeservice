@@ -156,12 +156,16 @@ var bitcoinPledge = function() {
 };
 
 var paypalPledge = function() {
-    if (validateForm()) {
-        setLoading(true);
-        $('#pledgeButton').toggleClass('disabled');
-        createPledge("Paypal", { PAYPAL: { step : 'start' } });
+    if( $("input[name=monthly][value=yes]").prop('checked') ){
+      $('#formError').text('We currently only support non-recurring donations with Paypal.');
+    }else{
+      if (validateForm()) {
+          setLoading(true);
+          $('#pledgeButton').toggleClass('disabled');
+          createPledge("Paypal", { PAYPAL: { step : 'start' } });
+      }
+      return false;
     }
-    return false;
 };
 var pledge = function() {
   if (validateForm()) {
