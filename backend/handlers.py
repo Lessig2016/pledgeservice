@@ -172,6 +172,8 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
       data['keep_donation'] = False
     if not 'pledge_fulfillment' in data:
       data['pledge_fulfillment'] = False    
+    if not 'upsell' in data:
+      data['upsell'] = False
 
     amountCents = data['amountCents']
 
@@ -201,7 +203,8 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
                              recurring=data['recurring'],
                              recurrence_period=data['recurrence_period'],
                              enddate=data['enddate'],
-                             keep_donation=data['keep_donation']
+                             keep_donation=data['keep_donation'],
+                             upsell=data['upsell']
                              )
     logging.info('Added pledge to database')                         
     if data['subscribe']:
@@ -407,7 +410,8 @@ class PledgeHandler(webapp2.RequestHandler):
                    recurrence_period=data['recurrence_period'],
                    receipt_url=receipt_url,
                    card_token=stripe_charge_id,
-                   customer_id=stripe_customer_id), self.response)
+                   customer_id=stripe_customer_id,
+                   upsell=data.get('upsell', False)), self.response)
 
 
   def options(self):

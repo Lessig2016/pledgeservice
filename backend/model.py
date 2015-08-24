@@ -326,11 +326,14 @@ class Pledge(db.Model):
   # Allow donation to be used for Upton campaign
   allowUpton = db.BooleanProperty(default=False)
   
+  # Whether recurring donation was upsold from the thank you page
+  upsell = db.BooleanProperty(default=False)
+  
   @staticmethod
   def create(email, stripe_customer_id, stripe_charge_id,
              paypal_payer_id, paypal_txn_id,
              amount_cents, pledge_type, team, anonymous, bitpay_invoice_id,
-	     recurring, recurrence_period, enddate, keep_donation
+	     recurring, recurrence_period, enddate, keep_donation, upsell
 	     ):
     assert pledge_type in Pledge.TYPE_VALUES
     pledge = Pledge(model_version=MODEL_VERSION,
@@ -348,7 +351,8 @@ class Pledge(db.Model):
         		    recurring=recurring,
         		    end_date=enddate,
         		    recurrence_period=recurrence_period,
-                    keep_donation=keep_donation)
+                    keep_donation=keep_donation,
+                    upsell=upsell)
     pledge.put()
     if team:
       TeamTotal.add(team, amount_cents)
@@ -421,7 +425,7 @@ def addPledge(email,
               paypal_txn_id=None, paypal_payer_id=None,
               address=None, city=None, state=None, zipCode=None,
               bitpay_invoice_id = None, recurring = None,
-	      recurrence_period = None, enddate = None, keep_donation = None):
+	      recurrence_period = None, enddate = None, keep_donation = None, upsell = None):
   """Creates a User model if one doesn't exist, finding one if one already
   does, using the email as a user key. Then adds a Pledge to the User with
   the given card token as a new credit card.
@@ -441,20 +445,20 @@ def addPledge(email,
     address=address, city=city, state=state, zipCode=zipCode )
 
   return user, Pledge.create(email=email,
-                       stripe_customer_id=stripe_customer_id,
-                       stripe_charge_id=stripe_charge_id,
-                       paypal_txn_id=paypal_txn_id,
-                       paypal_payer_id=paypal_payer_id,
-                       amount_cents=amount_cents,
-                       pledge_type=pledge_type,
-                       team=team,
-                       anonymous=anonymous,
-                       bitpay_invoice_id = bitpay_invoice_id,
-		       recurring = recurring,
-		       enddate = enddate,
-		       recurrence_period = recurrence_period,
-               keep_donation = keep_donation)
-
+                             stripe_customer_id=stripe_customer_id,
+                             stripe_charge_id=stripe_charge_id,
+                             paypal_txn_id=paypal_txn_id,
+                             paypal_payer_id=paypal_payer_id,
+                             amount_cents=amount_cents,
+                             pledge_type=pledge_type,
+                             team=team,
+                             anonymous=anonymous,
+                             bitpay_invoice_id = bitpay_invoice_id,
+              		         recurring = recurring,
+                		     enddate = enddate,
+                		     recurrence_period = recurrence_period,
+                             keep_donation = keep_donation,
+                             upsell = upsell)
 
 class WpPledge(db.Model):
   # wp_post_id is also the model key
