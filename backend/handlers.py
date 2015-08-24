@@ -263,7 +263,7 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
     if data['recurring'] == True:    
       if data['upsell'] == True:
         amountRecurring = amountCents * 5
-      else
+      else:
         amountRecurring = amountCents * 6
       
     model.ShardedCounter.increment('TOTAL-5', amountRecurring)
