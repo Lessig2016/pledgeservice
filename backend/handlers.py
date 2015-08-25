@@ -1094,19 +1094,20 @@ class CandidatePollingHandler(webapp2.RequestHandler):
     json.dump(dict({}), self.response) #TODO -- return something sensible   
 
   def post(self):
+    env = self.app.config['env']
     util.EnableCors(self)
     email, candidates = json.loads(self.request.body).popitem()
     for candidate in candidates:
       model.CandidateVote.tally(email, candidate)
 
     format_kwargs = {
-      'name': data['name'].encode('utf-8'),
+      'name': email.encode('utf-8'),
     }
     
     text_body = open('email/voting-thank-you.txt').read().format(**format_kwargs)
     html_body = open('email/voting-thank-you.html').read().format(**format_kwargs)
 
-    env.mail_sender.Send(to=data['email'].encode('utf-8'),
+    env.mail_sender.Send(to=email.encode('utf-8'),
                          subject='Thanks for voting',
                          text_body=text_body,
                          html_body=html_body)
