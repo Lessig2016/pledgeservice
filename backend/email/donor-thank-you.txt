@@ -22,7 +22,7 @@ PS.  While our initial goal is to raise $1 million by Labor Day, our larger goal
 
 
 ----------------------
-This email is a receipt for your donation of {total}.<br/><br/>
-If you have any issues, please email us at info@lessigforpresident.com.<br/><br/>
-Paid for by Lessig Equal Citizens Exploratory Committee<br/><br/>
-<a href="http://www.lessigforpresident.com">www.lessigforpresident.com</a>
+This email is a receipt for your donation of {total}.
+If you have any issues, please email us at info@lessigforpresident.com.
+Paid for by Lessig Equal Citizens Exploratory Committee
+www.lessigforpresident.com
