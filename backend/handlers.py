@@ -1076,10 +1076,24 @@ class IssuePollingHandler(webapp2.RequestHandler):
     json.dump(dict({}), self.response) #TODO -- return something sensible
 
   def post(self):
+    env = self.app.config['env']
     util.EnableCors(self)
     email, issues = json.loads(self.request.body).popitem()
     for issue in issues:
       model.IssueVote.tally(email, issue)
+
+    #need to change this to use the actual name
+    format_kwargs = {
+      'name': email.encode('utf-8'),
+    }
+    
+    text_body = open('email/issue-survey-response.txt').read().format(**format_kwargs)
+    html_body = open('email/issue-survey-response.html').read().format(**format_kwargs)
+
+    env.mail_sender.Send(to=email.encode('utf-8'),
+                         subject='Thank you for making your voice heard',
+                         text_body=text_body,
+                         html_body=html_body)
 
 class CandidatePollingHandler(webapp2.RequestHandler):
   def options(self):
