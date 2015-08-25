@@ -1,14 +1,14 @@
-Hello [name];
+Hello {name};
 
 Thank you for signing the Equal Citizens Pledge at www.LessigforPresident.com.  We value your opinion, and your support is what makes it possible for us to take on politics as usual with this groundbreaking campaign to change the debate in 2016 and restore citizens equality.
 
 Because this is a kickstarter-like campaign, we will only launch the campaign if we meet the goal, which is $1,000,000 by Labor Day, Sep 7th, 2015.  So please click on the link below to contribute whatever you can to reaching this first critical goal:
 
-Click here to share our campaign on Facebook.
+https://facebook.com/lessig2016
 
-Click here to share our campaign on Twitter.
+https://twitter.com/lessig2016
 
-Click here to start your own fundraising page.
+https://lessigforpresident.com/take-action/recruit
 
 The power of this campaign is based on people like you in our national network, who connect all the important issues to the fundamental issue of inequality and then take action to fix it.  Using the power of the internet, let's see if we can kickstart a campaign to win the White House and then create the most lasting political change in our lifetime.
 
