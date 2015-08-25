@@ -1100,6 +1100,7 @@ class CandidatePollingHandler(webapp2.RequestHandler):
     for candidate in candidates:
       model.CandidateVote.tally(email, candidate)
 
+    #need to change this to use the actual name
     format_kwargs = {
       'name': email.encode('utf-8'),
     }
