@@ -460,7 +460,7 @@ class SubscribeHandler(webapp2.RequestHandler):
     if volunteer_input == 'Yes':
       volunteer_input = 'Yes'
       format_kwargs = {
-        'name': email.encode('utf-8')
+        'name': email_input.encode('utf-8')
       }
       
       if first_name != '':
