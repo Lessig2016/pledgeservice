@@ -1,17 +1,11 @@
-# MayOne.us RELOADED
+# Lessig2016
 
-
-[![Build Status](https://travis-ci.org/MayOneUS/pledgeservice.svg?branch=master)](https://travis-ci.org/MayOneUS/pledgeservice)
-[![Coverage Status](https://coveralls.io/repos/MayOneUS/pledgeservice/badge.png?branch=master)](https://coveralls.io/r/MayOneUS/pledgeservice?branch=master)
+You have the right to run, study, share, copy, and modify the software here, so long as you distribute your product under the same terms.  You are responsible for complying with any applicable campaign finance laws.
 
 We're trying a different architecture on GAE.
 
 This project is licensed under the Apache License, version 2.
 
-## HELP NEEDED!
-
-If you know a thing or two about computers and youre're interested in
-contributing, check out https://github.com/MayOneUS/wiki/wiki
 
 ## Design sketch
 
@@ -43,26 +37,13 @@ The backend will be very simple with two endpoints
 After checking out the code, run `npm install`. To start the server, run `npm start` and go to
 [http://localhost:8080](http://localhost:8080). That's it!
 
-If you want to rapidly set up a development environment that already has npm and
-dependencies installed using [docker](https://www.docker.io/), try running
-
-```
-docker run -t -i -v /path/to/checkout:/develop jtolds/mayone-gae /bin/bash
-```
-
-Then in that new shell
-
-```
-stunnel4 /etc/stunnel/https.conf
-cd /develop
-npm install
-npm start
-```
 
 ### Running Tests
 
 After running `npm install` and `grunt local`, copy `build/config.json` over to `backend/` and run
 `python testrunner.py` in the project's root directory.
+
+(Test have not been run on this codebase for a while. . . )
 
 
 ## Deploying
@@ -71,29 +52,14 @@ We have 4 deployment environments available, all of which can be set up with gru
 * **local**: For normal development, with code updates on every reload. Run `npm start` or equivalently `node_modules/.bin/grunt local`.
   * Note that in local mode, you can't actually send a transaction to stripe due to an SSL bug in dev_appserver. But
     you can get right up to that point before it fails, which is generally good enough.
-* **dev**: This is an independant instance of the app running at https://pure-spring-568.appspot.com. We can do
+* **dev**: This is an independant instance of the app running at https://pledge-test.lessigforpresident.com/pledge.. We can do
   whatever we want here because the data's all fake. It also uses Stripe's test keys, so feel free to submit test
   transactions with credit card 4242 4242 4242 4242. To deploy, run `./node_modules/.bin/grunt dev`, and then
   `appcfg.py --oauth2 update build/`.
-  When testing, it works best to hit this URL: https://pledgedev.mayday.us/pledge.
-* **staging**: This is the real app, but a separate version that's available at https://staging-dot-mayday-pac.appspot.com/.
-  Notably, it uses the same datastore as prod, and the real stripe keys. Any code that touches
-  the data should be deployed here with caution, but if not, you can be a little lax since real
-  traffic doesn't hit it. To deploy, run `./node_modules/.bin/grunt staging`, and then
+  When testing, it works best to hit this URL: https://pledge-test.lessigforpresident.com/pledge.
+
+* **lessig**: The real McCoy. Don't break it. To deploy, run `./node_modules/.bin/grunt lessig`, and then
   `appcfg.py --oauth2 update build/`.
-* **prod**: The real McCoy. Don't break it. To deploy, run `./node_modules/.bin/grunt prod`, and then
-  `appcfg.py --oauth2 update build/`.
-
-We don't have much in the way of release procedures, so it just comes down to how paranoid you want to be.
-Some changes can go straight to prod. Some should go through dev first. Some through both dev and staging
-before prod. App Engine even allows you do to traffic splitting, so we could theoretically send N% of
-queries to staging if we're really paranoid about something. Use good judgement and run it by team memebers
-if you're unsure.
-
-If you're pushing to prod, please tag the commit you're pushing with the next available "v1,v2,v3,..." tag,
-and remember to git push --tags. That way if we need to roll back we have a sense of what used to be in
-production.
-
 
 ## Troubleshooting
 
@@ -106,3 +72,4 @@ killing any child processes. Worst case, you may need to increase your inotify
 maximums; you can do that on a Linux system with this command:
 
     echo 1024 > /proc/sys/fs/inotify/max_user_instances
+
