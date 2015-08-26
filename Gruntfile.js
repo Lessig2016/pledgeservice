@@ -9,7 +9,7 @@ var LOCAL_CONFIG = {
 
 var DEV_CONFIG = {
   appName: 'lessig-trust-test',
-  hardCodeStripe: true,
+  hardCodeStripe: false,
   stripePublicKey: '',
   stripePrivateKey: '',
   appVersion: '1',
