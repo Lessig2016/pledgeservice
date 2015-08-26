@@ -457,8 +457,23 @@ class SubscribeHandler(webapp2.RequestHandler):
       phone_input = None
 
     volunteer_input = cgi.escape(self.request.get('volunteer')) # "YES" or "NO"
-    if volunteer_input == 'on':
+    if volunteer_input == 'Yes':
       volunteer_input = 'Yes'
+      format_kwargs = {
+        'name': email.encode('utf-8')
+      }
+      
+      if first_name != '':
+        format_kwargs['name'] = first_name
+
+      text_body = open('email/volunteer-thank-you.txt').read().format(**format_kwargs)
+      html_body = open('email/volunteer-thank-you.html').read().format(**format_kwargs)
+
+      env.mail_sender.Send(to=email.encode('utf-8'),
+                           subject='Thank you for signing up to volunteer',
+                           text_body=text_body,
+                           html_body=html_body)
+
     elif volunteer_input == 'off':
       volunteer_input = ''
 
