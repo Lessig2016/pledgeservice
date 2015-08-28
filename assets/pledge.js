@@ -311,9 +311,18 @@ var createPledge = function(name, payment) {
       success: function(response_data) {
         if ('paypal_url' in response_data) {
 
+          var redirPaypal = function(url){
+            setTimeout(function(){
+              location.href = url;
+            },200);
+          };
+
           //paypal success
           ga('send', 'event', 'Pledge', 'Paypal_Payment_Success', pledge_data['email'], 1 );
-          location.href = response_data.paypal_url;
+
+          //then redirect
+          redirPaypal( response_data.paypal_url );
+
         } else if ('bitpay_url' in response_data) {
 
           ga('send', 'event', 'Pledge', 'Bitcoin_Payment_Success', pledge_data['email'], 1 );
