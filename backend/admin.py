@@ -173,7 +173,7 @@ def generate_pledges_csv(file_name, pledge_type, pledge_time, full_data=False):
     if full_data:
       headers = ['SOURCE', 'donationTime', 'Amount ($)', 'url_nonce', 'stripeCustomer',
         'Email', 'First Name', 'Last Name', 'Address', 'Address 2', 'City', 'State',
-        'Zip', 'Country', 'Occupation', 'Employer', 'Targeting', 'Type', 'Recurring']
+        'Zip', 'Phone', 'Country', 'Occupation', 'Employer', 'Targeting', 'Type', 'Recurring']
     else:
       headers = ['zip', 'dollars', 'timestamp', 'date', 'city', 'state', 'latitude',
         'longitude']
@@ -377,10 +377,11 @@ def build_pledge_dict(pledge):
     'City': user.city,
     'State': user.state,
     'ZIP Code': user.zipCode,
+    'Phone': user.phone,
     'Country': 'United States',
     'Occupation': user.occupation,
     'Employer': user.employer,
-    'Targeting': user.target or 'Whatever Helps',
+    'Targeting': user.target or 'Whatever Helps'    
   })
   return pledge_dict
 
