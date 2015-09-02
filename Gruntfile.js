@@ -2,8 +2,8 @@ var LOCAL_CONFIG = {
   appName: 'local',
   appVersion: '1',
   hardCodeStripe: true,
-  stripePublicKey: '',
-  stripePrivateKey: '',
+  stripePublicKey: 'pk_test_QNMKNczLGEwgOr0TmpjOCxmO',
+  stripePrivateKey: 'sk_test_lBGyF7m5cCVilat5siOlAIT6',
   productionPaypal: false,
 };
 
