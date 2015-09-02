@@ -1,10 +1,8 @@
 {
-  "name": "mayone",
+  "name": "lessig2016-pledge-service",
+  "license": "Apache-2.0",
   "version": "0.1.0",
   "devDependencies": {
-    "grunt": "~0.4.2"
-  },
-  "dependencies": {
     "grunt": "0.4.x",
     "grunt-autoprefixer": "0.2.x",
     "grunt-cli": "~0.1.13",
@@ -20,5 +18,9 @@
   },
   "scripts": {
     "start": "grunt local"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lessig2016/pledgeservice"
   }
 }
