@@ -30,6 +30,8 @@ import urlparse
 import paypal
 from rauth import OAuth2Service
 
+class Error(Exception): pass
+
 # Immutable environment with both configuration variables, and backends to be
 # mocked out in tests.
 Environment = namedtuple(
@@ -737,6 +739,23 @@ class ThankTeamHandler(webapp2.RequestHandler):
 
   options = util.EnableCors
 
+# A handler for monitoring progress towards matching from the Presidential
+# Election Campaign Fund: http://www.fec.gov/press/bkgnd/fund.shtml
+# "... raising at least $5,000 in each of 20 states. Only contributions from
+# individuals, and only contributions up to $250, are matchable"
+class StatesHandler(webapp2.RequestHandler):
+  def get(self):
+    util.EnableCors(self)
+    totals = {}
+    for pledge in model.Pledge.all():
+      user = model.User.all().filter('email =', pledge.email).get()
+      totals[user.state] += min(pledge.amountCents, 25000) # max $250
+
+    for state, total in totals.iteritems():
+      totals[state] = min(500000, total) # no point counting past $5k
+    self.response.content_type = 'application/json'
+    self.response.write(json.dumps(totals))
+
 
 class PledgersHandler(webapp2.RequestHandler):
 
@@ -1170,6 +1189,7 @@ class CandidatePollingHandler(webapp2.RequestHandler):
 
 HANDLERS = [
   ('/r/leaderboard', LeaderboardHandler),
+  ('/r/states', StatesHandler),
   ('/r/pledgers', PledgersHandler),
   ('/r/pledge', PledgeHandler),
   ('/receipt/(.+)', ReceiptHandler),
