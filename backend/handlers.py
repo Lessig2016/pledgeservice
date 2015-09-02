@@ -749,6 +749,7 @@ class StatesHandler(webapp2.RequestHandler):
     totals = {}
     for pledge in model.Pledge.all():
       user = model.User.all().filter('email =', pledge.email).get()
+      totals.setdefault(user.state, 0)
       totals[user.state] += min(pledge.amountCents, 25000) # max $250
 
     for state, total in totals.iteritems():
