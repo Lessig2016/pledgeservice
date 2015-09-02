@@ -291,7 +291,7 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
                          text_body=text_body,
                          html_body=html_body)
 
-    if amountCents > 100000:
+    if amountCents >= 100000:
       format_kwargs = {
         'name': data['name'].encode('utf-8'),
         'total': totalStr,
