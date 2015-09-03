@@ -105,7 +105,7 @@ PLEDGE_SCHEMA = dict(
     amountCents=dict(type='integer', minimum=100, maximum=540000),
     pledgeType=dict(enum=model.Pledge.TYPE_VALUES, required=False),
     team=dict(type='string', blank=True),
-    source=dict(type='string', blank=True),
+    source=dict(type='string', blank=True, required=False),
     recurrence_period=dict(type='string', required=False, enum=valid_recurrence_periods),
     payment=dict(type='object',
                  properties=dict(
@@ -175,6 +175,8 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
       data['pledge_fulfillment'] = False    
     if not 'upsell' in data:
       data['upsell'] = False
+    if not 'source' in data:
+      data['source'] = None
 
     amountCents = data['amountCents']
 
