@@ -105,6 +105,7 @@ PLEDGE_SCHEMA = dict(
     amountCents=dict(type='integer', minimum=100, maximum=540000),
     pledgeType=dict(enum=model.Pledge.TYPE_VALUES, required=False),
     team=dict(type='string', blank=True),
+    source=dict(type='string', blank=True),
     recurrence_period=dict(type='string', required=False, enum=valid_recurrence_periods),
     payment=dict(type='object',
                  properties=dict(
@@ -193,6 +194,7 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
                              pledge_type=data.get(
                                'pledgeType', model.Pledge.TYPE_CONDITIONAL),
                              team=data['team'],
+                             source=data['source'],
                              mail_list_optin=data['subscribe'],
                              anonymous=data.get('anonymous', False),
                              address=str(data['address']),
@@ -238,6 +240,7 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
                              pledge_type=data.get(
                                'pledgeType', model.Pledge.TYPE_CONDITIONAL),
                              team=data['team'],
+                             source=data['source'],
                              mail_list_optin=data['subscribe'],
                              anonymous=data.get('anonymous', False),
                              address=str(data['address']),
@@ -839,7 +842,8 @@ class BitcoinStartHandler(webapp2.RequestHandler):
       state=data["state"],
       zipCode=data["zip"],
       bitcoinConfirm=data["bitcoinConfirm"],
-      team=data["team"]
+      team=data["team"],
+      source=data["source"]
     )
     temp_key = temp_pledge.put()
     temp_key_str = str(temp_key)
@@ -947,6 +951,7 @@ class BitcoinNotificationsHandler(webapp2.RequestHandler):
       'target': temp_pledge.target,
       'subscribe': temp_pledge.subscribe,
       'team': temp_pledge.team,
+      'source': temp_pledge.source,
       'first_name': temp_pledge.firstName,
       'last_name': temp_pledge.lastName,
       'address': temp_pledge.address,
@@ -1069,7 +1074,7 @@ class PaypalReturnHandler(webapp2.RequestHandler):
     if custom['email'][0] != paypal_email:
         logging.warning("User entered email [%s], but purchased with email [%s]" % (custom['email'][0], paypal_email))
 
-    for v in { 'email', 'phone', 'occupation', 'employer', 'target', 'subscribe', 'anonymous', 'pledgeType', 'team', 'surveyResult' }:
+    for v in { 'email', 'phone', 'occupation', 'employer', 'target', 'subscribe', 'anonymous', 'pledgeType', 'team', 'source', 'surveyResult' }:
       if v in custom:
         data[v] = custom[v][0]
       else:

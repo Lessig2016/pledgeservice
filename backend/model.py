@@ -253,6 +253,7 @@ class TempPledge(db.Model):
   keep_donation=db.BooleanProperty(default=False)
 
   team = db.StringProperty()
+  source = db.StringProperty(required=False)
   # all pledge_types for bitpay pledges must be "DONATION"
   bitpay_invoice_id = db.StringProperty()
   pledge_id = db.StringProperty(required=False)
@@ -304,6 +305,9 @@ class Pledge(db.Model):
   # Optionally, a pledge can be assigned to a "team".
   team = db.StringProperty()
 
+  # Optionally, a pledge can be attributed to a "source".
+  source = db.StringProperty(required=False)
+
   # If anonymous, the pledge shouldn't be displayed along with the user's name
   # publically
   anonymous = db.BooleanProperty(required=False, default=False)
@@ -332,7 +336,7 @@ class Pledge(db.Model):
   @staticmethod
   def create(email, stripe_customer_id, stripe_charge_id,
              paypal_payer_id, paypal_txn_id,
-             amount_cents, pledge_type, team, anonymous, bitpay_invoice_id,
+             amount_cents, pledge_type, team, source, anonymous, bitpay_invoice_id,
 	     recurring, recurrence_period, enddate, keep_donation, upsell
 	     ):
     assert pledge_type in Pledge.TYPE_VALUES
@@ -345,6 +349,7 @@ class Pledge(db.Model):
                     amountCents=amount_cents,
                     pledge_type=pledge_type,
                     team=team,
+                    source=source,
                     url_nonce=os.urandom(32).encode("hex"),
                     anonymous=anonymous,
                     bitpay_invoice_id=bitpay_invoice_id,
@@ -420,7 +425,7 @@ class TeamTotal(db.Model):
 def addPledge(email,
               amount_cents, pledge_type,
               first_name, last_name, occupation, employer, phone,
-              target, team, mail_list_optin, anonymous, surveyResult=None,
+              target, team, source, mail_list_optin, anonymous, surveyResult=None,
               stripe_customer_id=None, stripe_charge_id=None,
               paypal_txn_id=None, paypal_payer_id=None,
               address=None, city=None, state=None, zipCode=None,
@@ -452,6 +457,7 @@ def addPledge(email,
                              amount_cents=amount_cents,
                              pledge_type=pledge_type,
                              team=team,
+                             source=source,
                              anonymous=anonymous,
                              bitpay_invoice_id = bitpay_invoice_id,
               		         recurring = recurring,
@@ -718,7 +724,7 @@ class MissingDataUsersSecondary(db.Model):
 def addNationBuilderDonation(email,
               amount_cents, pledge_type,
               first_name, last_name, occupation, employer, phone,
-              target, team, mail_list_optin, anonymous, surveyResult=None,
+              target, team, source, mail_list_optin, anonymous, surveyResult=None,
               stripe_customer_id=None, stripe_charge_id=None,
               paypal_txn_id=None, paypal_payer_id=None,
               address=None, city=None, state=None, zipCode=None,
@@ -746,6 +752,8 @@ def addNationBuilderDonation(email,
         pass 
     if team:
         pass 
+    if source:
+        pass
     if surveyResult:
         pass 
     if stripe_customer_id:
