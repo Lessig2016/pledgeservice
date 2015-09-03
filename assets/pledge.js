@@ -235,7 +235,8 @@ var createPledge = function(name, payment) {
   var recurrence_period = $('#recurrence_period_input').val() || null;
   var enddate = $('enddate_input').val() || null;
   var keep_donation = $('#keep_donation').prop('checked');
-  
+  var source = urlParams['source'];
+
   if (($("#requiredConfirmation").prop('checked') == false) && ('BITCOIN' in payment) ) {
     console.log('Trying to pay with BITCOIN without a confirmation') 
     return;
@@ -294,7 +295,11 @@ var createPledge = function(name, payment) {
   if (pledge_fulfillment) {
     pledge_data['pledge_fulfillment'] = pledge_fulfillment;
   }
-  
+
+  if (source) {
+    pledge_data['source'] = source;
+  }  
+
   pledge_data['keep_donation'] = keep_donation;
   
   //CAB: we can probably delete the next three lines
