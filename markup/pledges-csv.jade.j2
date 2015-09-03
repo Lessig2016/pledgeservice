@@ -12,7 +12,7 @@ html
       var PARALLELISM = 10;
       // we could just iterate over the keys, but we want a specific order
       var headers = [
-        'Source',
+        'Payment Gateway',
         'Donation Date',
         'Amount ($)',
         'Plege url_nonce',
@@ -32,7 +32,8 @@ html
         'Employer',
         'Targeting',
         'Type',
-        'Recurring'
+        'Recurring',
+        'Source'
       ];
       function escapeValue(v){
         if (v === null) {

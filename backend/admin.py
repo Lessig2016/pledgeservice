@@ -173,7 +173,7 @@ def generate_pledges_csv(file_name, pledge_type, pledge_time, full_data=False):
     if full_data:
       headers = ['SOURCE', 'donationTime', 'Amount ($)', 'url_nonce', 'stripeCustomer',
         'Email', 'First Name', 'Last Name', 'Address', 'Address 2', 'City', 'State',
-        'Zip', 'Phone', 'Country', 'Occupation', 'Employer', 'Targeting', 'Type', 'Recurring']
+        'Zip', 'Phone', 'Country', 'Occupation', 'Employer', 'Targeting', 'Type', 'Recurring', 'Source']
     else:
       headers = ['zip', 'dollars', 'timestamp', 'date', 'city', 'state', 'latitude',
         'longitude']
@@ -326,7 +326,7 @@ class PledgesExportJSONHandler(webapp2.RequestHandler):
 
     self.response.write(json.dumps(resp))
 
-def get_source(pledge):
+def get_payment_gateway(pledge):
   if isinstance(pledge, model.WpPledge):
     return 'STRIPE/WORDPRESS'
   elif pledge.paypalPayerID:
@@ -350,14 +350,15 @@ def build_pledge_dict(pledge):
   payer = pledge.stripeCustomer or pledge.paypalPayerID or pledge.bitpay_invoice_id
   date = utc_to_boston_time(pledge.donationTime)
   pledge_dict = {
-    'Source': get_source(pledge),
+    'Payment Gateway': get_payment_gateway(pledge),
     'Donation Date': date.strftime('%-m/%-d/%y %H:%M'),
     'Amount ($)': cents_to_dollar_str(pledge.amountCents),
     'Plege url_nonce': pledge.url_nonce,
     'Payer Identifier': payer,
     'Email': pledge.email,
     'Type': pledge.pledge_type,
-    'Recurring': pledge.recurring
+    'Recurring': pledge.recurring,
+    'Source': pledge.source
   }
 
   # add user info
