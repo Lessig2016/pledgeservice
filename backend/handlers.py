@@ -1035,7 +1035,7 @@ class PaypalReturnHandler(webapp2.RequestHandler):
     if not token or not payer_id:
       logging.warning("Paypal completion missing data: " + self.request.url)
       self.error(400);
-      self.response.write("Unusual error: no token or payer id from Paypal.  Please contact info@lessigforpresident.com and report these details:")
+      self.response.write("Unusual error: no token or payer id from Paypal.  Please contact info@lessig2016.us and report these details:")
       self.response.write(self.request.url)
       return
 
@@ -1048,7 +1048,7 @@ class PaypalReturnHandler(webapp2.RequestHandler):
     rc, results = paypal.send_request(form_fields)
     if not rc:
       self.error(400);
-      self.response.write("Unusual error: Could not get payment details from Paypal.  Please contact info@lessigforpresident.com and report these details:")
+      self.response.write("Unusual error: Could not get payment details from Paypal.  Please contact info@lessig2016.us and report these details:")
       self.response.write(pprint.pformat(results))
       return
 
@@ -1109,11 +1109,11 @@ class PaypalReturnHandler(webapp2.RequestHandler):
       id, auth_token, uut, receipt_url = pledge_helper(self, data, None, None, payer_id, results['PAYMENTINFO_0_TRANSACTIONID'][0])
       logging.info('Paypal Pledge handler finished')
       #forcing recurring true for paypal
-      self.redirect("https://lessigforpresident.com/thank-you/?amountCents=" + str(data['amountCents']) + '&recurring=true');
+      self.redirect("https://lessig2016.us/thank-you/?amountCents=" + str(data['amountCents']) + '&recurring=true');
 
     else:
       self.error(400);
-      self.response.write("Unusual error: Could not get complete payment from Paypal.  Please contact info@lessigforpresident.com and report these details:")
+      self.response.write("Unusual error: Could not get complete payment from Paypal.  Please contact info@lessig2016.us and report these details:")
       self.response.write(pprint.pformat(results))
       return
 

@@ -52,11 +52,11 @@ We have 4 deployment environments available, all of which can be set up with gru
 * **local**: For normal development, with code updates on every reload. Run `npm start` or equivalently `node_modules/.bin/grunt local`.
   * Note that in local mode, you can't actually send a transaction to stripe due to an SSL bug in dev_appserver. But
     you can get right up to that point before it fails, which is generally good enough.
-* **dev**: This is an independant instance of the app running at https://pledge-test.lessigforpresident.com/pledge.. We can do
+* **dev**: This is an independant instance of the app running at https://pledge-test.lessig2016.us/pledge.. We can do
   whatever we want here because the data's all fake. It also uses Stripe's test keys, so feel free to submit test
   transactions with credit card 4242 4242 4242 4242. To deploy, run `./node_modules/.bin/grunt dev`, and then
   `appcfg.py --oauth2 update build/`.
-  When testing, it works best to hit this URL: https://pledge-test.lessigforpresident.com/pledge.
+  When testing, it works best to hit this URL: https://pledge-test.lessig2016.us/pledge.
 
 * **lessig**: The real McCoy. Don't break it. To deploy, run `./node_modules/.bin/grunt lessig`, and then
   `appcfg.py --oauth2 update build/`.

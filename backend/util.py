@@ -27,7 +27,7 @@ def EnableCors(handler):
             netloc == 'lessig-team.appspot.com' or
             netloc == 'lessig-trust-test.appspot.com' or
             netloc == 'lessig-trust.appspot.com' or 
-            netloc.endswith('lessigforpresident.com') or
+            netloc.endswith('lessig2016.us') or
             '104.131.9.3' in netloc):
       logging.warning('Invalid origin: ' + origin + ' Netloc was: ' + netloc )
       handler.error(403)

@@ -34,7 +34,7 @@ class ContactHandler(webapp2.RequestHandler):
                                            model.Config.get().app_name),
                                 reply_to=replyto,
                                 subject=ascii_subject)
-    message.to = "info@lessigforpresident.com"
+    message.to = "info@lessig2016.us"
     message.body = 'FROM: %s\n\n%s' % (ascii_email, ascii_body)
     message.send()
     util.EnableCors(self)
