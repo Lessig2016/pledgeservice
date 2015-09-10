@@ -7,7 +7,8 @@ import logging
 import cgi
 import base64
 import urllib
-import datetime
+import time
+import calendar
 
 from google.appengine.api import mail
 from google.appengine.ext import db
@@ -29,6 +30,8 @@ import pprint
 import urlparse
 import paypal
 from rauth import OAuth2Service
+
+class Error(Exception): pass
 
 # Immutable environment with both configuration variables, and backends to be
 # mocked out in tests.
@@ -742,6 +745,34 @@ class ThankTeamHandler(webapp2.RequestHandler):
 
   options = util.EnableCors
 
+# A handler for monitoring progress towards matching from the Presidential
+# Election Campaign Fund: http://www.fec.gov/press/bkgnd/fund.shtml
+# "... raising at least $5,000 in each of 20 states. Only contributions from
+# individuals, and only contributions up to $250, are matchable"
+class StatesHandler(webapp2.RequestHandler):
+  VALUE_KEY = "STATES-TOTALS"
+  TIME_KEY = "STATES-TIME"
+  def get(self):
+    util.EnableCors(self)
+    self.response.content_type = 'application/json'
+    now = calendar.timegm(time.gmtime())
+    then = memcache.get(StatesHandler.TIME_KEY)
+    old = memcache.get(StatesHandler.VALUE_KEY)
+    if old and ((now - then) < (10 * 60)):
+      self.response.write(old)
+    else:
+      logging.info('Recomputing states totals.')
+      memcache.set(StatesHandler.TIME_KEY, now)
+      totals = {}
+      for pledge in model.Pledge.all():
+        user = model.User.all().filter('email =', pledge.email).get()
+        totals.setdefault(user.state, 0)
+        totals[user.state] += min(pledge.amountCents, 25000) # max $250
+      for state, total in totals.iteritems():
+        totals[state] = min(500000, total) # no point counting past $5k
+      value = json.dumps(totals);
+      self.response.write(value)
+      memcache.set(StatesHandler.VALUE_KEY, value)
 
 class PledgersHandler(webapp2.RequestHandler):
 
@@ -1177,6 +1208,7 @@ class CandidatePollingHandler(webapp2.RequestHandler):
 
 HANDLERS = [
   ('/r/leaderboard', LeaderboardHandler),
+  ('/r/states', StatesHandler),
   ('/r/pledgers', PledgersHandler),
   ('/r/pledge', PledgeHandler),
   ('/receipt/(.+)', ReceiptHandler),
