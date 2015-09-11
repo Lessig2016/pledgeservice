@@ -160,7 +160,6 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
 
     if not 'bitpay_invoice_id' in data:
       data['bitpay_invoice_id'] = None
-    print data
     if not 'recurring' in data:
       data['recurring'] = False
     if not 'enddate' in data:
