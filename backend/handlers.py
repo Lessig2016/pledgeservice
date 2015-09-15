@@ -265,13 +265,14 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
       stretchTotal = StretchCheckTotal.get()
       StretchCheckTotal.update( stretchTotal - amountCents)
     
-    # Add to the total, adjusting 6x for recurring, 5x for recurring upsells   
+    # Weird code structure below left intact in case we want to go back and
+    # start counting 
     amountRecurring = amountCents
     if data['recurring'] == True:    
       if data['upsell'] == True:
-        amountRecurring = amountCents * 5
+        amountRecurring = 0
       else:
-        amountRecurring = amountCents * 6
+        amountRecurring = amountCents
       
     model.ShardedCounter.increment('TOTAL-5', amountRecurring)
     
