@@ -1,8 +1,10 @@
 # Lessig2016
 
-We're trying a different architecture on GAE.
+## tl;dr
 
-You are responsible for complying with any applicable campaign finance laws.
+* **Applicable skills** TBD
+* **Slack** [#gh-pledgeservice](https://teamlessigtech.slack.com/messages/gh-pledgeservice/)
+* **Project lead** [@sean](https://teamlessigtech.slack.com/team/sean)
 
 ## Design sketch
 
