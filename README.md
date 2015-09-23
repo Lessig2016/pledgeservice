@@ -73,7 +73,7 @@ maximums; you can do that on a Linux system with this command:
 
 ## Code of Conduct
 
-The Lessig Equal Citizens Exploratory Committee is committed to fostering an open and inclusive community where engaged, dedicated volunteers can build the strategy and tools necessary to fix our country's democracy. All members of the community are expected to behave with civility, speak honestly and treat one another respectfully.
+Lessig2016 is committed to fostering an open and inclusive community where engaged, dedicated volunteers can build the strategy and tools necessary to fix our country's democracy. All members of the community are expected to behave with civility, speak honestly and treat one another respectfully.
 
 This project adheres to the [Open Code of Conduct](http://todogroup.org/opencodeofconduct/#Lessig2016/conduct@lessigforpresident.com). 
 By participating, you are expected to honor this code.
@@ -93,7 +93,7 @@ The campaign may remove any offensive, abusive, attacking, or discriminatory con
 
 ## Copyright and License
 
-Copyright 2015 Lessig Equal Citizens Exploratory Committee. This 
+Copyright 2015 Lessig2016. This 
 project is released under [GNU Affero General Public License, version 3](https://github.com/Lessig2016/pledgeservice/blob/master/LICENSE).
 
 This program is free software: you can redistribute it and/or modify
