@@ -245,7 +245,7 @@ class SubscribeEmailPage(webapp2.RequestHandler):
 
 class RootRedirectHandler(webapp2.RequestHandler):
   def get(self):  
-    self.redirect('/pledge')
+    self.redirect('/donate')
 
 HANDLERS = [
   ('/', RootRedirectHandler),
