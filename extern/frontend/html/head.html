@@ -6,13 +6,10 @@
  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
 
- ga('create', 'UA-50367295-1', 'mayday.us');
+ ga('create', 'UA-65924640-1', 'auto', {'allowLinker': true});
+ ga('require', 'linker');
+ ga('linker:autoLink', ['pledge.lessig2016.us', 'store.lessig2016.us'] );
  ga('require', 'displayfeatures');
-
- // Optimizely Universal Analytics Integration
- window.optimizely = window.optimizely || [];
- window.optimizely.push("activateUniversalAnalytics");
-
  ga('send', 'pageview');
 
 </script>
