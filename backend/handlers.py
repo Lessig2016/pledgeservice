@@ -563,7 +563,7 @@ class SubscribeHandler(webapp2.RequestHandler):
       if len(redirect_input)>0:
         redirect_url = '%s?email=%s&source=%s' % (redirect_input, email_input, source_input)
       else:
-        redirect_url = '/pledge?email=%s' % email_input
+        redirect_url = '/donate?email=%s' % email_input
       self.redirect(str(redirect_url))
     else:
       pass

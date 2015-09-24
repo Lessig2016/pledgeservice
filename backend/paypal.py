@@ -66,7 +66,7 @@ def SetExpressCheckout(host_url, data):
     form_fields = {
       "METHOD": "SetExpressCheckout",
       "RETURNURL": host_url + '/r/paypal_return',
-      "CANCELURL": host_url + '/pledge',
+      "CANCELURL": host_url + '/donate',
       "EMAIL": data['email'],
       "PAYMENTREQUEST_0_PAYMENTACTION": "Sale",
       "PAYMENTREQUEST_0_DESC": "Lessig Equal Citizens Exploratory Committee",

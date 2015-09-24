@@ -13,8 +13,8 @@ handlers:
   static_files: static/favicon.ico
   upload: static/*
 
-- url: /pledge/?
-  static_files: static/pledge.html
+- url: /donate/?
+  static_files: static/donate.html
   upload: static/*
   secure: always
 
