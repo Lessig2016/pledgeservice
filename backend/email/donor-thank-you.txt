@@ -1,6 +1,6 @@
 Hello {name};
 
-Thank you for your contribution to Lessig2016.  Your support is what makes it possible for us to take on politics as usual with this groundbreaking campaign to change the debate in 2016 and restore citizens equality.
+Thank you for your contribution to Lessig2016.us.  Your support is what makes it possible for us to take on politics as usual with this groundbreaking campaign to change the debate in 2016 and restore citizens equality.
 
 Please click on the links below to spread the word wherever you can:
 
@@ -24,5 +24,5 @@ P.S.: Our larger goal is to raise a million dollars every month in order to run 
 ----------------------
 This email is a receipt for your donation of {total}.
 If you have any issues, please email us at info@lessig2016.us.
-Paid for by Lessig2016
-http://Lessig2016.us
+Paid for by LESSIG2016.US
+http://lessig2016.us
