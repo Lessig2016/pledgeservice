@@ -1039,7 +1039,10 @@ class PaypalStartHandler(webapp2.RequestHandler):
       self.response.write('Invalid request')
       return
 
-
+    for dk in data:
+      if dk == 'employer' or dk == 'occupation':
+        data[dk] = data[dk][:18]
+      logging.info('Data coming in to paypal_start %s',data[dk]);
 
     rc, paypal_url = paypal.SetExpressCheckout(self.request.host_url, data)
     if rc:
