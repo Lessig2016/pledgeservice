@@ -1104,7 +1104,11 @@ class PaypalReturnHandler(webapp2.RequestHandler):
     data['amountCents'] = cents
     payer_id = results['PAYERID'][0]
     custom = urlparse.parse_qs(results['CUSTOM'][0])
-    if custom['email'][0] != paypal_email:
+
+    cemail = (custom['email'][0]) ? custom['email'][0].lower() : ''
+    ppemail = (paypal_email) ? paypal_email.lower() : ''
+
+    if cemail != ppemail:
         logging.warning("User entered email [%s], but purchased with email [%s]" % (custom['email'][0], paypal_email))
 
     for v in { 'email', 'phone', 'occupation', 'employer', 'target', 'subscribe', 'anonymous', 'pledgeType', 'team', 'source', 'surveyResult' }:
