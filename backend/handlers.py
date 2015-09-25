@@ -1041,8 +1041,8 @@ class PaypalStartHandler(webapp2.RequestHandler):
 
     for dk in data:
       if dk == 'employer' or dk == 'occupation':
-        data[dk] = data[dk][:24]
-    #logging.info("Data going out to paypalsetexpresscheckout %s, length: %s" % (data,len(data))
+        data[dk] = data[dk][:16]
+    #string length is an issue here!
 
     rc, paypal_url = paypal.SetExpressCheckout(self.request.host_url, data)
     if rc:
