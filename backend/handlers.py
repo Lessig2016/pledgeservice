@@ -1039,12 +1039,15 @@ class PaypalStartHandler(webapp2.RequestHandler):
       self.response.write('Invalid request')
       return
 
-
+    for dk in data:
+      if dk == 'employer' or dk == 'occupation':
+        data[dk] = data[dk][:16]
+    #string length is an issue here!
 
     rc, paypal_url = paypal.SetExpressCheckout(self.request.host_url, data)
     if rc:
-        json.dump(dict(paypal_url=paypal_url), self.response)
-        return
+      json.dump(dict(paypal_url=paypal_url), self.response)
+      return
 
     logging.warning('PaypalStart failed')
     self.error(400)
