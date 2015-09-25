@@ -23,7 +23,7 @@ def send_request(fields):
     result_map = urlparse.parse_qs(result.content)
 
     if 'ACK' in result_map:
-        if result_map['ACK'][0] == "Success":
+        if result_map['ACK'][0] == "Success" or result_map['ACK'][0] = "SuccessWithWarning":
             return (True, result_map)
    
         logging.warning("Paypal returned an error:")
@@ -100,7 +100,7 @@ def DoExpressCheckoutPayment(token, payer_id, amount, custom):
       "TOKEN": token,
       "PAYERID": payer_id,
       "PAYMENTREQUEST_0_PAYMENTACTION": "Sale",
-      "PAYMENTREQUEST_0_DESC": "Non-refundable donation to Lessig Equal Citizens Exploratory Committee",
+      "PAYMENTREQUEST_0_DESC": "Non-refundable donation to Lessig2016.us",
       "PAYMENTREQUEST_0_AMT":  amount,
       "PAYMENTREQUEST_0_ITEMAMT":  amount,
       "PAYMENTREQUEST_0_CUSTOM": custom,
