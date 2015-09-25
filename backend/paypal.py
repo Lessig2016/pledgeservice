@@ -23,7 +23,7 @@ def send_request(fields):
     result_map = urlparse.parse_qs(result.content)
 
     if 'ACK' in result_map:
-        if result_map['ACK'][0] == "Success" or result_map['ACK'][0] = "SuccessWithWarning":
+        if result_map['ACK'][0] == "Success" or result_map['ACK'][0] == "SuccessWithWarning":
             return (True, result_map)
    
         logging.warning("Paypal returned an error:")
