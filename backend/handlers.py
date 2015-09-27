@@ -174,7 +174,7 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
     if not 'keep_donation' in data:
       data['keep_donation'] = False
     if not 'pledge_fulfillment' in data:
-      data['pledge_fulfillment'] = False    
+      data['pledge_fulfillment'] = False
     if not 'upsell' in data:
       data['upsell'] = False
     if not 'source' in data:
@@ -211,9 +211,9 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
                              enddate=data['enddate'],
                              keep_donation=data['keep_donation'],
                              upsell=data['upsell'],
-                             addressCheckPass=data.get('addressCheck', True),                             
+                             addressCheckPass=data.get('addressCheck', True),
                              )
-    logging.info('Added pledge to database')                         
+    logging.info('Added pledge to database')
     if data['subscribe']:
       env.mailing_list_subscriber.Subscribe(
         email=data['email'],
@@ -227,7 +227,7 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
         recurring=data['recurring'],
         zipcode=data['zipCode']
       )
-        
+
     if False:
         model.addNationBuilderDonation(email=data['email'],
                              stripe_customer_id=stripe_customer_id,
@@ -258,25 +258,25 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
                              recurrence_period = data['recurrence_period'],
                              nationBuilderVars = data['nationBuilderVars']
                              )
-        
-            
-    
+
+
+
     if data['pledge_fulfillment']: # Remove from stretch total.
       logging.info('Removing from stretch total: $%d' % int(amountCents / 100))
       stretchTotal = StretchCheckTotal.get()
       StretchCheckTotal.update( stretchTotal - amountCents)
-    
+
     # Weird code structure below left intact in case we want to go back and
-    # start counting 
+    # start counting
     amountRecurring = amountCents
-    if data['recurring'] == True:    
+    if data['recurring'] == True:
       if data['upsell'] == True:
         amountRecurring = 0
       else:
         amountRecurring = amountCents
-      
+
     model.ShardedCounter.increment('TOTAL-5', amountRecurring)
-    
+
     if data['team']:
       cache.IncrementTeamPledgeCount(data['team'], 1)
       cache.IncrementTeamTotal(data['team'], amountRecurring)
@@ -314,7 +314,7 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
                            subject='A donation for %s has come in from %s %s' % (totalStr, first_name, last_name),
                            text_body=lessig_body,
                            html_body='<html><body>' + lessig_body + '</html></body>')
-   
+
     id = str(pledge.key())
     receipt_url = '?receipt=%s&auth_token=%s&uut=%s' % (id, str(pledge.url_nonce), str(user.url_nonce))
 
@@ -354,11 +354,11 @@ class PledgeHandler(webapp2.RequestHandler):
     stripe_customer = None
     stripe_customer_id = data.get('customer_id', None)
     stripe_charge_id = None
-    
+
     # upsell this customer's plan to a monthly subscription
     if stripe_customer_id:
       try:
-        env.stripe_backend.UpsellCustomerToMonthlySubscription(stripe_customer_id, data['amountCents']/100)    
+        env.stripe_backend.UpsellCustomerToMonthlySubscription(stripe_customer_id, data['amountCents']/100)
       except PaymentError, e:
         logging.warning('Payment error: %s', e)
         self.error(400)
@@ -371,22 +371,22 @@ class PledgeHandler(webapp2.RequestHandler):
 
           if data.get('recurrence_period', None) == None:
             data['recurrence_period'] = 'monthly'
-            
+
           stripe_customer = env.stripe_backend.CreateCustomerWithPlan(
-            email=data['email'], 
-            card_token=data['payment']['STRIPE']['token'], 
+            email=data['email'],
+            card_token=data['payment']['STRIPE']['token'],
             amount_dollars=data['amountCents']/100,
             recurrence_period=data['recurrence_period'],
             upsell=data.get('upsell', False))
 
-        else:          
+        else:
           logging.info('Trying to create stripe customer %s for a single donation' % data['email'])
           stripe_customer = env.stripe_backend.CreateCustomer(
             email=data['email'],
-            card_token=data['payment']['STRIPE']['token'])          
+            card_token=data['payment']['STRIPE']['token'])
 
         stripe_customer_id = stripe_customer.id
-        logging.info('Trying to extract address for %s' % data['email'])        
+        logging.info('Trying to extract address for %s' % data['email'])
         logging.info('Stripe customer is %s' % str(stripe_customer))
 
         if len(stripe_customer.sources.data) > 0:
@@ -398,8 +398,8 @@ class PledgeHandler(webapp2.RequestHandler):
               # Used to just fail all of these for matching funds
               # logging.warning('Your billing address did not validate')
               # self.error(400)
-              # json.dump(dict(paymentError='Your billing address did not validate'), self.response)              
-              # return  # error trapping is not working in here, so have to do hacky early return for now              
+              # json.dump(dict(paymentError='Your billing address did not validate'), self.response)
+              # return  # error trapping is not working in here, so have to do hacky early return for now
 
           if 'address_line1' in card_data:
             data['address'] = card_data['address_line1']
@@ -422,7 +422,7 @@ class PledgeHandler(webapp2.RequestHandler):
         self.error(400)
         json.dump(dict(paymentError=str(e)), self.response)
         return
-        
+
     else:
       logging.warning('No payment processor specified: %s', data)
       self.error(400)
@@ -460,15 +460,15 @@ class SubscribeHandler(webapp2.RequestHandler):
       logging.warning("Bad Request: required field (email) missing.")
       self.error(400)
       return
-    
-    redirect_input = cgi.escape(self.request.get('redirect'))    
+
+    redirect_input = cgi.escape(self.request.get('redirect'))
     dont_redirect = cgi.escape(self.request.get('dont_redirect'))
 
     if dont_redirect != '':
       dont_redirect = True
     if redirect_input != '':
       dont_redirect = False
-    
+
     is_supporter = cgi.escape(self.request.get('is_supporter'))
     if type(is_supporter) != bool:
       is_supporter = False
@@ -499,7 +499,7 @@ class SubscribeHandler(webapp2.RequestHandler):
       format_kwargs = {
         'name': email_input.encode('utf-8')
       }
-      
+
       if first_name != '':
         format_kwargs['name'] = first_name
 
@@ -531,18 +531,18 @@ class SubscribeHandler(webapp2.RequestHandler):
     pledgePageSlug_input = cgi.escape(self.request.get('pledgePageSlug'))
     if len(pledgePageSlug_input) == 0:
       pledgePageSlug_input = ''
-      
+
     otherVars = {}
     # get any parameter that looks like MERGE something
     for argName in self.request.arguments():
       if argName.startswith('MERGE'):
         arg = self.request.get(argName)
-        otherVars[argName] = arg    
+        otherVars[argName] = arg
     NationBuilderVars = {}
     for argName in self.request.arguments():
       if argName.startswith('NationBuilder'):
         arg = self.request.get(argName)
-	NationBuilderVars[argName[13:]] = arg
+    NationBuilderVars[argName[13:]] = arg
 
     env.mailing_list_subscriber.Subscribe(
       email=email_input,
@@ -572,8 +572,8 @@ class SubscribeHandler(webapp2.RequestHandler):
       pass
 
   options = util.EnableCors
-    
-    
+
+
 class ReceiptHandler(webapp2.RequestHandler):
   def get(self, id):
     try:
@@ -611,9 +611,9 @@ class PaymentConfigHandler(webapp2.RequestHandler):
   def get(self):
     util.EnableCors(self)
     env = self.app.config['env']
-    
+
     logging.info('Got env ' + str(env))
-    
+
     if not env.stripe_public_key:
       raise Error('No stripe public key in DB')
     params = dict(testMode=(env.app_name == u'local'),
@@ -629,7 +629,7 @@ class NumPledgesHandler(webapp2.RequestHandler):
     util.EnableCors(self)
 
     WP_PLEDGES = 0
-    VERSION_12_AND_UNDER = 0 
+    VERSION_12_AND_UNDER = 0
 
     count = memcache.get('TOTAL-PLEDGES')
     if not count:
@@ -1042,12 +1042,15 @@ class PaypalStartHandler(webapp2.RequestHandler):
       self.response.write('Invalid request')
       return
 
-    for dk in data:
-      if dk == 'employer' or dk == 'occupation':
-        data[dk] = data[dk][:16]
-    #string length is an issue here!
+    # This is a bit of a hack; we save the request data in a SimpleKv to load
+    # when paypal comes back to us. It may be worth switching to use TempPledge
+    # like bitpay does, but that model currently makes assumptions that it's a
+    # bitcoin transaction, and I (hjfreyer) don't want to mess with it.
+    kv = model.SimpleKv(value=json.dumps(data))
+    data_key = kv.put()
 
-    rc, paypal_url = paypal.SetExpressCheckout(self.request.host_url, data)
+    rc, paypal_url = paypal.SetExpressCheckout(
+        self.request.host_url, str(data_key))
     if rc:
       json.dump(dict(paypal_url=paypal_url), self.response)
       return
@@ -1109,7 +1112,7 @@ class PaypalReturnHandler(webapp2.RequestHandler):
     cents = int(float(amount)) * 100
     data['amountCents'] = cents
     payer_id = results['PAYERID'][0]
-    custom = urlparse.parse_qs(results['CUSTOM'][0])
+    custom = self._get_custom_data(results['CUSTOM'][0])
 
     cemail = custom['email'][0].lower() if custom['email'][0] else ''
     ppemail = paypal_email.lower() if paypal_email else ''
@@ -1158,10 +1161,26 @@ class PaypalReturnHandler(webapp2.RequestHandler):
       self.response.write(pprint.pformat(results))
       return
 
+  def _get_custom_data(key_or_uri_dict):
+    """The custom data field returned by paypal is either a URI encoded
+    dictionary, or a DB key for a SimpleKv with JSON data as the value. To
+    support the transition from the former to the latter, we first check the
+    DB, then try to interpret it as an encoded dictionary.
+
+    In either case, returns the result as a dict.
+    """
+    # First try using it as a key.
+    key = db.Key(encoded=key_or_uri_dict)
+    kv = model.SimpleKv.get(key)
+    if kv:
+      return json.loads(kv.value)
+
+    return urlparse.parse_qs(key_or_uri_dict)
+
 class IssuePollingHandler(webapp2.RequestHandler):
   def get(self):
     util.EnableCors(self)
-    self.response.headers['Content-Type'] = 'application/json' 
+    self.response.headers['Content-Type'] = 'application/json'
     json.dump(dict({}), self.response) #TODO -- return something sensible
 
   def post(self):
@@ -1175,7 +1194,7 @@ class IssuePollingHandler(webapp2.RequestHandler):
     format_kwargs = {
       'name': email.encode('utf-8'),
     }
-    
+
     text_body = open('email/issue-survey-response.txt').read().format(**format_kwargs)
     html_body = open('email/issue-survey-response.html').read().format(**format_kwargs)
 
@@ -1190,11 +1209,11 @@ class CandidatePollingHandler(webapp2.RequestHandler):
     self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
     self.response.headers['Access-Control-Max-Age'] = '1000'
     self.response.headers['Access-Control-Allow-Headers'] = 'origin, x-csrftoken, content-type, accept'
-    
+
   def get(self):
     util.EnableCors(self)
-    self.response.headers['Content-Type'] = 'application/json' 
-    json.dump(dict({}), self.response) #TODO -- return something sensible   
+    self.response.headers['Content-Type'] = 'application/json'
+    json.dump(dict({}), self.response) #TODO -- return something sensible
 
   def post(self):
     env = self.app.config['env']
@@ -1207,7 +1226,7 @@ class CandidatePollingHandler(webapp2.RequestHandler):
     format_kwargs = {
       'name': email.encode('utf-8'),
     }
-    
+
     text_body = open('email/voting-thank-you.txt').read().format(**format_kwargs)
     html_body = open('email/voting-thank-you.html').read().format(**format_kwargs)
 

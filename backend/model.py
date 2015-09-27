@@ -41,7 +41,7 @@ class Error(Exception): pass
 #  11: Paypal support
 #  12: TeamTotal.num_pledges added. This is a live total of completed pledges for
 #       that team.
-#  13: Added 'Use for Upton' value to Pledge.  This allows the pledge to be used 
+#  13: Added 'Use for Upton' value to Pledge.  This allows the pledge to be used
 #       for Upton campaign, if true
 #
 #  14: Added addressCheckPass to Pledge.  This will be false if Stripe returns false in 
@@ -292,7 +292,7 @@ class Pledge(db.Model):
 
   # what the user is pledging for
   amountCents = db.IntegerProperty(required=True)
-  
+
   keepDonation = db.BooleanProperty(default=False)
 
   # Enum for what kind of pledge this is, represented as a string for
@@ -324,19 +324,19 @@ class Pledge(db.Model):
   url_nonce = db.StringProperty(required=True)
 
   thank_you_sent_at = db.DateTimeProperty(required=False)
-  
+
   # implementing recurring payment support! this is just recording if the
   # payment is intended to be recurring
   recurring = db.BooleanProperty(default=False)
   end_date = db.DateTimeProperty(required=False)
-  recurrence_period = db.StringProperty(required=False) 
+  recurrence_period = db.StringProperty(required=False)
 
   # Allow donation to be used for Upton campaign
   allowUpton = db.BooleanProperty(default=False)
-  
+
   # Whether recurring donation was upsold from the thank you page
   upsell = db.BooleanProperty(default=False)
-  
+
   @staticmethod
   def create(email, stripe_customer_id, stripe_charge_id,
              paypal_payer_id, paypal_txn_id,
@@ -489,9 +489,9 @@ class WpPledge(db.Model):
   target = db.StringProperty(required=False)
 
   url_nonce = db.StringProperty(required=True)
-  
+
   keep_donation=db.BooleanProperty(default=False)
-  
+
 
 
 class ChargeStatus(db.Model):
@@ -675,7 +675,7 @@ class ShardedCounter(db.Model):
 class Issue(db.Model):
   name = db.StringProperty(required=True)
   count = db.IntegerProperty(required=False, default=1)
-  
+
   @staticmethod
   @db.transactional
   def upsert(name):
@@ -701,7 +701,7 @@ class IssueVote(db.Model):
     IssueVote(model_version=MODEL_VERSION,
               email=email,
               name=name.strip().title()).put()
-  
+
 class CandidateVote(db.Model):
   email = db.StringProperty(required=True)
   name = db.StringProperty(required=True)
@@ -712,7 +712,18 @@ class CandidateVote(db.Model):
     CandidateVote(model_version=MODEL_VERSION,
                   email=email,
                   name=name.strip().title()).put()
-  
+                  
+class SimpleKv(db.Model):
+  """A store for blobs of data that need to be temporarily stored somewhere.
+
+  Generally, using this probably isn't the right thing to do, but sometimes
+  you just need to persist a little data between requests.
+
+  Currently, this is used by:
+    * The paypal handler.
+  """
+  value = db.StringProperty(required=True, indexed=False)
+
 # SECONDARY MODELS
 # ################
 # These models are used as caches for other parts of the data model,
@@ -727,7 +738,7 @@ class MissingDataUsersSecondary(db.Model):
   # change is to go up, and if it does, it means the user pledged
   # again, so they must have filled in their missing data.
   amountCents = db.IntegerProperty(required=True)
-  
+
 
 def addNationBuilderDonation(email,
               amount_cents, pledge_type,
@@ -742,8 +753,8 @@ def addNationBuilderDonation(email,
     donation = {'amount_in_cents':amount_cents,
                 'email':email,
                 'succeeded_at': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                }    
-    donation['billing_address'] = {} 
+                }
+    donation['billing_address'] = {}
     if first_name:
         donation['first_name'] = first_name
     if last_name:
@@ -753,17 +764,17 @@ def addNationBuilderDonation(email,
     if employer:
         donation['employer'] = employer
     if phone:
-        pass 
+        pass
     if anonymous:
-        pass 
+        pass
     if target:
-        pass 
+        pass
     if team:
-        pass 
+        pass
     if source:
         pass
     if surveyResult:
-        pass 
+        pass
     if stripe_customer_id:
         donation['stripe_customer_id'] = stripe_customer_id
     if stripe_charge_id:
@@ -775,7 +786,7 @@ def addNationBuilderDonation(email,
     if address:
         donation['billing_address']['address1'] = address
     if city:
-        donation['billing_address']['city'] = city 
+        donation['billing_address']['city'] = city
     if state:
         donation['billing_address']['state'] = state
     if zipCode:

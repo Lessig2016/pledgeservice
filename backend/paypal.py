@@ -17,7 +17,7 @@ def send_request(fields):
     fields["SIGNATURE"] = config.paypal_signature
 
     form_data = urllib.urlencode(fields)
-    
+
     result = urlfetch.fetch(url=config.paypal_api_url, payload=form_data, method=urlfetch.POST,
                 headers={'Content-Type': 'application/x-www-form-urlencoded'})
     result_map = urlparse.parse_qs(result.content)
@@ -25,7 +25,7 @@ def send_request(fields):
     if 'ACK' in result_map:
         if result_map['ACK'][0] == "Success" or result_map['ACK'][0] == "SuccessWithWarning":
             return (True, result_map)
-   
+
         logging.warning("Paypal returned an error:")
         logging.warning(pprint.pformat(result_map))
         return (False, result_map)
@@ -42,39 +42,21 @@ def encode_data(data):
     del d['name']
     del d['payment']
 
-    return urllib.urlencode(d)
-
-def SetExpressCheckout(host_url, data):
-
-    amount = data['amountCents'] / 100
-
-    encoded_data = encode_data(data)
-
-    # Paypal limits our custom field to 200 characters
-    #  If there isn't room for the team, let's strip it out,
-    #  and try to pick it up via cookie later
-    if len(encoded_data) >= 200:      
-        del data['team']
-        encoded_data = encode_data(data)
-
-    if len(encoded_data) >= 200:
-        logging.warning("Encoded data length %d too long" % len(encoded_data))
-        logging.info("Data was: %s" % encoded_data)
-        return False, ""
-
+def SetExpressCheckout(host_url, amount_cents, email, data_key):
+    amount_dollars = amount_cents / 100
 
     form_fields = {
       "METHOD": "SetExpressCheckout",
       "RETURNURL": host_url + '/r/paypal_return',
       "CANCELURL": host_url + '/donate',
-      "EMAIL": data['email'],
+      "EMAIL": email,
       "PAYMENTREQUEST_0_PAYMENTACTION": "Sale",
       "PAYMENTREQUEST_0_DESC": "Lessig Equal Citizens Exploratory Committee",
-      "PAYMENTREQUEST_0_AMT":  "%d.00" % amount,
-      "PAYMENTREQUEST_0_ITEMAMT":  "%d.00" % amount,
-      "PAYMENTREQUEST_0_CUSTOM": encoded_data,
+      "PAYMENTREQUEST_0_AMT":  "%d.00" % amount_dollars,
+      "PAYMENTREQUEST_0_ITEMAMT":  "%d.00" % amount_dollars,
+      "PAYMENTREQUEST_0_CUSTOM": data_key,
       "L_PAYMENTREQUEST_0_NAME0": "Lessig Equal Citizens Exploratory Committee",
-      "L_PAYMENTREQUEST_0_AMT0":  "%d.00" % amount,
+      "L_PAYMENTREQUEST_0_AMT0":  "%d.00" % amount_dollars,
       "ALLOWNOTE":  "0",
       "SOLUTIONTYPE":  "Sole",
       "BRANDNAME":  "Lessig Equal Citizens Exploratory Committee",
@@ -109,4 +91,3 @@ def DoExpressCheckoutPayment(token, payer_id, amount, custom):
     rc, results = send_request(form_fields)
 
     return rc, results
-
