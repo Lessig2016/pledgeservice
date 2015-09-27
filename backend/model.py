@@ -44,7 +44,11 @@ class Error(Exception): pass
 #  13: Added 'Use for Upton' value to Pledge.  This allows the pledge to be used 
 #       for Upton campaign, if true
 #
-MODEL_VERSION = 13
+#  14: Added addressCheckPass to Pledge.  This will be false if Stripe returns false in 
+#       the address validation field.  In Lessig project, all earlier pledges can be assumed 
+#       to have this set to True
+#
+MODEL_VERSION = 14
 
 
 # Config singleton. Loaded once per instance and never modified. It's
@@ -337,8 +341,9 @@ class Pledge(db.Model):
   def create(email, stripe_customer_id, stripe_charge_id,
              paypal_payer_id, paypal_txn_id,
              amount_cents, pledge_type, team, source, anonymous, bitpay_invoice_id,
-	     recurring, recurrence_period, enddate, keep_donation, upsell
-	     ):
+             recurring, recurrence_period, enddate, keep_donation, upsell,
+             addressCheckPass
+             ):
     assert pledge_type in Pledge.TYPE_VALUES
     pledge = Pledge(model_version=MODEL_VERSION,
                     email=email,
@@ -353,11 +358,12 @@ class Pledge(db.Model):
                     url_nonce=os.urandom(32).encode("hex"),
                     anonymous=anonymous,
                     bitpay_invoice_id=bitpay_invoice_id,
-        		    recurring=recurring,
-        		    end_date=enddate,
-        		    recurrence_period=recurrence_period,
+                    recurring=recurring,
+                    end_date=enddate,
+                    recurrence_period=recurrence_period,
                     keep_donation=keep_donation,
-                    upsell=upsell)
+                    upsell=upsell,
+                    addressCheckPass=addressCheckPass)
     pledge.put()
     if team:
       TeamTotal.add(team, amount_cents)
@@ -430,7 +436,8 @@ def addPledge(email,
               paypal_txn_id=None, paypal_payer_id=None,
               address=None, city=None, state=None, zipCode=None,
               bitpay_invoice_id = None, recurring = None,
-	      recurrence_period = None, enddate = None, keep_donation = None, upsell = None):
+              recurrence_period = None, enddate = None, keep_donation = None, 
+              upsell = None, addressCheckPass = True):
   """Creates a User model if one doesn't exist, finding one if one already
   does, using the email as a user key. Then adds a Pledge to the User with
   the given card token as a new credit card.
@@ -460,11 +467,12 @@ def addPledge(email,
                              source=source,
                              anonymous=anonymous,
                              bitpay_invoice_id = bitpay_invoice_id,
-              		         recurring = recurring,
-                		     enddate = enddate,
-                		     recurrence_period = recurrence_period,
+                             recurring = recurring,
+                             enddate = enddate,
+                             recurrence_period = recurrence_period,
                              keep_donation = keep_donation,
-                             upsell = upsell)
+                             upsell = upsell,
+                             addressCheckPass = addressCheckPass)
 
 class WpPledge(db.Model):
   # wp_post_id is also the model key

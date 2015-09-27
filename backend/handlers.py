@@ -210,7 +210,8 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
                              recurrence_period=data['recurrence_period'],
                              enddate=data['enddate'],
                              keep_donation=data['keep_donation'],
-                             upsell=data['upsell']
+                             upsell=data['upsell'],
+                             addressCheckPass=data.get('addressCheck', True),                             
                              )
     logging.info('Added pledge to database')                         
     if data['subscribe']:
@@ -252,10 +253,10 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
                              state=data['state'],
                              zipCode=data['zipCode'],
                              bitpay_invoice_id = data['bitpay_invoice_id'],
-			                 recurring = data['recurring'],
-			                 enddate = data['enddate'],
-			                 recurrence_period = data['recurrence_period'],
-			                 nationBuilderVars = data['nationBuilderVars']
+                             recurring = data['recurring'],
+                             enddate = data['enddate'],
+                             recurrence_period = data['recurrence_period'],
+                             nationBuilderVars = data['nationBuilderVars']
                              )
         
             
@@ -393,10 +394,12 @@ class PledgeHandler(webapp2.RequestHandler):
           if 'address_line1_check' in card_data:
             logging.info('Address check: %s' % card_data['address_line1_check'])
             if card_data['address_line1_check'] == 'fail':
-              logging.warning('Your billing address did not validate')
-              self.error(400)
-              json.dump(dict(paymentError='Your billing address did not validate'), self.response)              
-              return  # error trapping is not working in here, so have to do hacky early return for now              
+              data['addressCheckPass'] = False
+              # Used to just fail all of these for matching funds
+              # logging.warning('Your billing address did not validate')
+              # self.error(400)
+              # json.dump(dict(paymentError='Your billing address did not validate'), self.response)              
+              # return  # error trapping is not working in here, so have to do hacky early return for now              
 
           if 'address_line1' in card_data:
             data['address'] = card_data['address_line1']
