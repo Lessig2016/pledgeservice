@@ -12,10 +12,13 @@ import model
 import cache
 
 
-class Error(Exception): pass
+class Error(Exception):
+  pass
+
 
 class Command(object):
   """Base class for commands."""
+
   def __init__(self, config):
     self.config = config
 
@@ -124,7 +127,9 @@ class BackfillTeamTotalNumPledges(Command):
         tt.num_pledges += model.Pledge.all().filter("team =", tt.team).count()
         tt.put()
       else:
-        logging.info('Ignoring %s because it has %d already' % (tt.team, tt.num_pledges))
+        logging.info('Ignoring %s because it has %d already' %
+                     (tt.team, tt.num_pledges))
+
 
 class ResetTeamPledgeCount(Command):
   SHORT_NAME = 'reset_team_num_pledges'
@@ -165,8 +170,8 @@ def update_user_data(env, pledge_type, pledge_time):
         continue
       if hasattr(pledge, 'paypalTransactionID') and pledge.paypalTransactionID:
         request_data = {
-          'METHOD': 'GetTransactionDetails',
-          'TRANSACTIONID': pledge.paypalTransactionID
+            'METHOD': 'GetTransactionDetails',
+            'TRANSACTIONID': pledge.paypalTransactionID
         }
         rc, txn_data = paypal.send_request(request_data)
         if not rc:
@@ -210,12 +215,12 @@ class UpdateUserData(Command):
 
 # List your command here so admin.py can expose it.
 COMMANDS = [
-  ResetTeamPledgeCount,
-  BackfillTeamTotalNumPledges,
-  TestCommand,
-  FindMissingDataUsersCommand,
-  UpdateSecretsProperties,
-  RequestAllPledges,
-  ChargeRequested,
-  UpdateUserData
+    ResetTeamPledgeCount,
+    BackfillTeamTotalNumPledges,
+    TestCommand,
+    FindMissingDataUsersCommand,
+    UpdateSecretsProperties,
+    RequestAllPledges,
+    ChargeRequested,
+    UpdateUserData
 ]

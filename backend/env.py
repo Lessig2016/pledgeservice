@@ -29,14 +29,15 @@ def get_env():
     mailing_list_subscriber = MailchimpSubscriber()
 
   return handlers.Environment(
-    app_name=j['appName'],
-    stripe_public_key=model.Config.get().stripe_public_key,
-    stripe_backend=stripe_backend,
-    mailing_list_subscriber=mailing_list_subscriber,
-    mail_sender=MailSender())
+      app_name=j['appName'],
+      stripe_public_key=model.Config.get().stripe_public_key,
+      stripe_backend=stripe_backend,
+      mailing_list_subscriber=mailing_list_subscriber,
+      mail_sender=MailSender())
 
 
 class ProdStripe(handlers.StripeBackend):
+
   def __init__(self, stripe_private_key):
     self.stripe_private_key = stripe_private_key
 
@@ -54,10 +55,10 @@ class ProdStripe(handlers.StripeBackend):
     stripe.api_key = self.stripe_private_key
     try:
       charge = stripe.Charge.create(
-        amount=amount_cents,
-        currency='usd',
-        customer=customer_id,
-        statement_descriptor="Lessig Equal Citizens"
+          amount=amount_cents,
+          currency='usd',
+          customer=customer_id,
+          statement_descriptor="Lessig Equal Citizens"
       )
     except stripe.CardError, e:
       logging.info('Stripe returned error for customer: %s ' % customer_id)
@@ -65,7 +66,7 @@ class ProdStripe(handlers.StripeBackend):
     return charge.id
 
   def CreateCustomerWithPlan(self, email, card_token, amount_dollars,
-    recurrence_period, upsell):
+                             recurrence_period, upsell):
     stripe.api_key = self.stripe_private_key
     if upsell:
       plan = "recurring_upsell"
@@ -77,10 +78,10 @@ class ProdStripe(handlers.StripeBackend):
       plan = "one_dollar_monthly"
 
     customer = stripe.Customer.create(
-      card=card_token,
-      email=email,
-      plan=plan,
-      quantity=amount_dollars
+        card=card_token,
+        email=email,
+        plan=plan,
+        quantity=amount_dollars
     )
 
     return customer
@@ -94,7 +95,9 @@ class ProdStripe(handlers.StripeBackend):
 
     return customer
 
+
 class FakeStripe(handlers.StripeBackend):
+
   def CreateCustomer(self, email, card_token):
     logging.warning('USING FAKE STRIPE')
     cus = stripe.Customer()
@@ -109,39 +112,39 @@ class FakeStripe(handlers.StripeBackend):
 
   def RetrieveCardData(self, customer_id):
     return {
-      "address_city": "Washington",
-      "address_country": "US",
-      "address_line1": "1600 Pennsylvania Ave NW",
-      "address_line1_check": "pass",
-      "address_line2": "",
-      "address_state": "DC",
-      "address_zip": "20500",
-      "address_zip_check": "pass",
-      "brand": "Visa",
-      "country": "US",
-      "customer": customer_id,
-      "cvc_check": "pass",
-      "exp_month": 3,
-      "exp_year": 2020,
-      "fingerprint": "fakefingerprint",
-      "funding": "debit",
-      "id": "card_fakeid",
-      "last4": "4242",
-      "name": "Phillip Mamouf-Wifarts",
-      "object": "card",
-      "type": "Visa"
+        "address_city": "Washington",
+        "address_country": "US",
+        "address_line1": "1600 Pennsylvania Ave NW",
+        "address_line1_check": "pass",
+        "address_line2": "",
+        "address_state": "DC",
+        "address_zip": "20500",
+        "address_zip_check": "pass",
+        "brand": "Visa",
+        "country": "US",
+        "customer": customer_id,
+        "cvc_check": "pass",
+        "exp_month": 3,
+        "exp_year": 2020,
+        "fingerprint": "fakefingerprint",
+        "funding": "debit",
+        "id": "card_fakeid",
+        "last4": "4242",
+        "name": "Phillip Mamouf-Wifarts",
+        "object": "card",
+        "type": "Visa"
     }
 
   def Charge(self, customer_id, amount_cents):
     logging.error('USING FAKE STRIPE')
     if customer_id == 'doomed_customer':
       raise handlers.PaymentError(
-        'You have no chance to survive make your time')
+          'You have no chance to survive make your time')
     logging.error('CHARGED CUSTOMER %s %d cents', customer_id, amount_cents)
     return 'fake_charge_1234'
 
   def CreateCustomerWithPlan(self, email, card_token, amount_dollars,
-    recurrence_period):
+                             recurrence_period):
     logging.warning('USING FAKE STRIPE')
     cus = stripe.Customer()
     cus.cards = stripe.ListObject()
@@ -153,10 +156,12 @@ class FakeStripe(handlers.StripeBackend):
       cus.cards.data = [self.RetrieveCardData(id)]
     return cus
 
+
 class MailchimpSubscriber(handlers.MailingListSubscriber):
+
   def Subscribe(self, email, first_name, last_name, amount_cents, ip_addr, time,
                 source, phone=None, zipcode=None, volunteer=None, skills=None, rootstrikers=None,
-                nonce=None, pledgePageSlug=None, otherVars = None,
+                nonce=None, pledgePageSlug=None, otherVars=None,
                 is_supporter=None, nationBuilderVars=None, recurring=None):
     deferred.defer(_subscribe_to_mailchimp,
                    email, first_name, last_name,
@@ -171,12 +176,15 @@ class MailchimpSubscriber(handlers.MailingListSubscriber):
                    nonce, pledgePageSlug, otherVars,
                    is_supporter, nationBuilderVars)
 
+
 class FakeSubscriber(handlers.MailingListSubscriber):
+
   def Subscribe(self, **kwargs):
     logging.info('Subscribing %s', kwargs)
 
 
 class MailSender(object):
+
   def __init__(self, defer=True):
     # this can
     self.defer = defer
@@ -202,11 +210,12 @@ def _send_mail(to, subject, text_body, html_body, reply_to=None):
     message.reply_to = 'info@lessig2016.us'
   message.send()
 
+
 def _subscribe_to_nationbuilder(email_to_subscribe, first_name, last_name,
-                            amount, request_ip, source, phone=None, zipcode=None,
-                            volunteer=None, skills=None, rootstrikers=None,
-                            nonce=None, pledgePageSlug=None, otherVars=None,
-                            is_supporter=None, nationBuilderVars=None):
+                                amount, request_ip, source, phone=None, zipcode=None,
+                                volunteer=None, skills=None, rootstrikers=None,
+                                nonce=None, pledgePageSlug=None, otherVars=None,
+                                is_supporter=None, nationBuilderVars=None):
   nationbuilder_token = model.Secrets.get().nationbuilder_token
   if nationbuilder_token == '':
     return
@@ -215,15 +224,15 @@ def _subscribe_to_nationbuilder(email_to_subscribe, first_name, last_name,
   access_token_url = "http://" + nation_slug + ".nationbuilder.com/oauth/token"
   authorize_url = nation_slug + ".nationbuilder.com/oauth/authorize"
   service = OAuth2Service(
-    client_id = "",
-    client_secret = "",
-    name = "anyname",
-    authorize_url = authorize_url,
-    access_token_url = access_token_url,
-    base_url = nation_slug + ".nationbuilder.com")
+      client_id="",
+      client_secret="",
+      name="anyname",
+      authorize_url=authorize_url,
+      access_token_url=access_token_url,
+      base_url=nation_slug + ".nationbuilder.com")
   session = service.get_session(nationbuilder_token)
   person = {
-    'email':email_to_subscribe
+      'email': email_to_subscribe
   }
 
   if first_name:
@@ -253,7 +262,7 @@ def _subscribe_to_nationbuilder(email_to_subscribe, first_name, last_name,
     person["phone"] = phone
 
   if zipcode:
-    person['home_address'] = {'zip':zipcode}
+    person['home_address'] = {'zip': zipcode}
   if skills:
     person['skills'] = skills
 
@@ -275,15 +284,17 @@ def _subscribe_to_nationbuilder(email_to_subscribe, first_name, last_name,
   if nationBuilderVars:
     for key in nationBuilderVars.keys():
       person[key] = nationBuilderVars[key]
-  response = session.put('https://' + nation_slug +".nationbuilder.com/api/v1/people/push",
-    data=json.dumps({'person':person}),
-    headers={"content-type":"application/json"}
-  )
+  response = session.put('https://' + nation_slug + ".nationbuilder.com/api/v1/people/push",
+                         data=json.dumps({'person': person}),
+                         headers={"content-type": "application/json"}
+                         )
   id = json.loads(response.content)["person"]["id"]
   response = session.put('https://' + nation_slug + ".nationbuilder.com/api/v1/people/" + str(id) + "/taggings",
-    data=json.dumps({"tagging":{"tag":"source: " + source}}),
-    headers={"content-type":"application/json"}
+                         data=json.dumps(
+      {"tagging": {"tag": "source: " + source}}),
+      headers={"content-type": "application/json"}
   )
+
 
 def _subscribe_to_mailchimp(email_to_subscribe, first_name, last_name,
                             amount, request_ip, source, phone=None, zipcode=None,
@@ -292,13 +303,12 @@ def _subscribe_to_mailchimp(email_to_subscribe, first_name, last_name,
   mailchimp_api_key = model.Config.get().mailchimp_api_key
   mailchimp_list_id = model.Config.get().mailchimp_list_id
 
-
   mc = mailchimp.Mailchimp(mailchimp_api_key)
   merge_vars = {
-    'FNAME': first_name,
-    'LNAME': last_name,
-    'optin_ip': request_ip,
-    'optin_time': str(datetime.datetime.now())
+      'FNAME': first_name,
+      'LNAME': last_name,
+      'optin_ip': request_ip,
+      'optin_time': str(datetime.datetime.now())
   }
 
   if source:
@@ -314,7 +324,7 @@ def _subscribe_to_mailchimp(email_to_subscribe, first_name, last_name,
   if nonce is not None:
     merge_vars['UUT'] = nonce
 
-  if skills is not None and len(skills)>0:
+  if skills is not None and len(skills) > 0:
     merge_vars['SKILLS'] = skills[0:255]
 
   if phone is not None:
@@ -336,13 +346,14 @@ def _subscribe_to_mailchimp(email_to_subscribe, first_name, last_name,
     merge_vars['RECURRING'] = recurring
 
   # list ID and email struct
-  logging.info('Subscribing: %s. Merge_vars: %s', email_to_subscribe, str(merge_vars))
+  logging.info('Subscribing: %s. Merge_vars: %s',
+               email_to_subscribe, str(merge_vars))
   try:
     mc.lists.subscribe(id=mailchimp_list_id,
-                     email=dict(email=email_to_subscribe),
-                     merge_vars=merge_vars,
-                     double_optin=False,
-                     update_existing=True,
-                     send_welcome=False)
+                       email=dict(email=email_to_subscribe),
+                       merge_vars=merge_vars,
+                       double_optin=False,
+                       update_existing=True,
+                       send_welcome=False)
   except mailchimp.ListInvalidImportError as e:
     logging.info("ListInvalidImportError: %s", e.message)

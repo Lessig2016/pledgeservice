@@ -21,32 +21,34 @@ import env
 import model
 import templates
 
+
 class AdminDashboardHandler(webapp2.RequestHandler):
+
   def get(self):
     users = AdminDashboardHandler.get_missing_data_users()
 
     template = templates.GetTemplate('admin-dashboard.html')
     try:
       pledge_amounts = files.blobstore.get_file_name(
-        blobstore.BlobInfo.all().filter(
-          'filename =', 'pledge_amounts.csv'
-        ).order('-creation').get().key())
+          blobstore.BlobInfo.all().filter(
+              'filename =', 'pledge_amounts.csv'
+          ).order('-creation').get().key())
     except:
       pledge_amounts = None
     try:
       pledges = files.blobstore.get_file_name(blobstore.BlobInfo.all().filter(
-        'filename =', 'pledges.csv'
+          'filename =', 'pledges.csv'
       ).order('-creation').get().key())
     except:
       pledges = None
     self.response.write(template.render({
-      'missingUsers': [dict(email=user.email, amount=amt/100)
-                       for user, amt in users],
-      'totalMissing': sum(v for _, v in users)/100,
-      'shardedCounterTotal': model.ShardedCounter.get_count('TOTAL-5'),
-      'commands': AdminDashboardHandler.get_commands(),
-      'pledge_amounts': pledge_amounts,
-      'pledges': pledges
+        'missingUsers': [dict(email=user.email, amount=amt / 100)
+                         for user, amt in users],
+        'totalMissing': sum(v for _, v in users) / 100,
+        'shardedCounterTotal': model.ShardedCounter.get_count('TOTAL-5'),
+        'commands': AdminDashboardHandler.get_commands(),
+        'pledge_amounts': pledge_amounts,
+        'pledges': pledges
     }))
 
   # Gets all the users with missing employer/occupation/targeting data
@@ -96,12 +98,14 @@ def generate_pledge_amounts_csv(file_name):
 
 
 class GeneratePledgeAmountsCsvHandler(webapp2.RequestHandler):
+
   def get(self):
     # Create a blobstore file, a deferred task, and redirect to the download
     # page.
     file_name = files.blobstore.create(
-      mime_type='text/csv', _blobinfo_uploaded_filename="pledge_amounts.csv")
-    deferred.defer(generate_pledge_amounts_csv, file_name, _queue='generateCSV')
+        mime_type='text/csv', _blobinfo_uploaded_filename="pledge_amounts.csv")
+    deferred.defer(generate_pledge_amounts_csv,
+                   file_name, _queue='generateCSV')
     self.redirect('/admin/files%s/pledge_amounts.csv' % file_name)
 
 
@@ -117,21 +121,22 @@ def pledge_row(pledge, zg, full_data=False):
     zg_lookup = {'lat': '', 'lon': ''}
 
   if full_data:
-    output = full_pledge_data(pledge,user)
+    output = full_pledge_data(pledge, user)
   else:
     output = [
-              user.zipCode,
-              int(pledge.amountCents / 100.0),
-              str(pledge.donationTime),
-              pledge.donationTime.strftime('%-m/%-d/%y'),
-              user.city,
-              user.state,
-              zg_lookup['lat'],
-              zg_lookup['lon']
-            ]
+        user.zipCode,
+        int(pledge.amountCents / 100.0),
+        str(pledge.donationTime),
+        pledge.donationTime.strftime('%-m/%-d/%y'),
+        user.city,
+        user.state,
+        zg_lookup['lat'],
+        zg_lookup['lon']
+    ]
   return output
 
-def full_pledge_data(pledge,user):
+
+def full_pledge_data(pledge, user):
   if pledge.paypalPayerID:
     source = 'PAYPAL'
   elif pledge.bitpay_invoice_id:
@@ -140,25 +145,25 @@ def full_pledge_data(pledge,user):
     source = 'STRIPE'
 
   return [
-    source,
-    pledge.donationTime.strftime('%-m/%-d/%y'),
-    pledge.amountCents/100.0,
-    pledge.url_nonce,
-    pledge.stripeCustomer or pledge.paypalPayerID or pledge.bitpay_invoice_id,
-    pledge.email,
-    user.first_name,
-    user.last_name,
-    user.address,
-    '',
-    user.city,
-    user.state,
-    user.zipCode,
-    'United States',
-    user.occupation,
-    user.employer,
-    user.target or 'Whatever Helps',
-    pledge.pledge_type,
-    pledge.recurring
+      source,
+      pledge.donationTime.strftime('%-m/%-d/%y'),
+      pledge.amountCents / 100.0,
+      pledge.url_nonce,
+      pledge.stripeCustomer or pledge.paypalPayerID or pledge.bitpay_invoice_id,
+      pledge.email,
+      user.first_name,
+      user.last_name,
+      user.address,
+      '',
+      user.city,
+      user.state,
+      user.zipCode,
+      'United States',
+      user.occupation,
+      user.employer,
+      user.target or 'Whatever Helps',
+      pledge.pledge_type,
+      pledge.recurring
   ]
 
 
@@ -172,11 +177,11 @@ def generate_pledges_csv(file_name, pledge_type, pledge_time, full_data=False):
     # First time through, add the column headers
     if full_data:
       headers = ['SOURCE', 'donationTime', 'Amount ($)', 'url_nonce', 'stripeCustomer',
-        'Email', 'First Name', 'Last Name', 'Address', 'Address 2', 'City', 'State',
-        'Zip', 'Phone', 'Country', 'Occupation', 'Employer', 'Targeting', 'Type', 'Recurring', 'Source']
+                 'Email', 'First Name', 'Last Name', 'Address', 'Address 2', 'City', 'State',
+                 'Zip', 'Phone', 'Country', 'Occupation', 'Employer', 'Targeting', 'Type', 'Recurring', 'Source']
     else:
       headers = ['zip', 'dollars', 'timestamp', 'date', 'city', 'state', 'latitude',
-        'longitude']
+                 'longitude']
 
     w.writerow(headers)
   zg = Zipgun('zipgun/zipcodes')
@@ -213,27 +218,31 @@ def generate_pledges_csv(file_name, pledge_type, pledge_time, full_data=False):
 
 
 class GeneratePledgesCsvHandler(webapp2.RequestHandler):
+
   def get(self):
     # Create a blobstore file, a deferred task, and redirect to the download
     # page.
     file_name = files.blobstore.create(
-      mime_type='text/csv', _blobinfo_uploaded_filename="pledges.csv")
+        mime_type='text/csv', _blobinfo_uploaded_filename="pledges.csv")
     deferred.defer(generate_pledges_csv, file_name, 'WpPledge', None,
                    False, _queue='generateCSV')
     self.redirect('/admin/files%s/pledges.csv' % file_name)
 
+
 class GeneratePledgesFullDataCsvHandler(webapp2.RequestHandler):
+
   def get(self):
     # Create a blobstore file, a deferred task, and redirect to the download
     # page.
     file_name = files.blobstore.create(
-      mime_type='text/csv', _blobinfo_uploaded_filename="pledges_full_data.csv")
+        mime_type='text/csv', _blobinfo_uploaded_filename="pledges_full_data.csv")
     deferred.defer(generate_pledges_csv, file_name, 'Pledge', None,
                    True, _queue='generateCSV')
     self.redirect('/admin/files%s/pledges_full_data.csv' % file_name)
 
 
 class CsvHandler(blobstore_handlers.BlobstoreDownloadHandler):
+
   def get(self, file_name):
     """
     Serve the blobstore file if it exists, otherwise instruct the user to
@@ -249,10 +258,11 @@ class CsvHandler(blobstore_handlers.BlobstoreDownloadHandler):
 
 
 class StretchHandler(webapp2.RequestHandler):
+
   def get(self):
     total = model.StretchCheckTotal.get()
     if total != 0:
-      total = total/100
+      total = total / 100
     template = templates.GetTemplate('stretch.html')
     self.response.write(template.render({'stretch': total}))
 
@@ -264,26 +274,32 @@ class StretchHandler(webapp2.RequestHandler):
 
       # clear the cache so that it recalculates the next time
       model.ShardedCounter.clear('TOTAL-5')
-      self.response.write('The Stretch total has been updated to: $' + str(total))
+      self.response.write(
+          'The Stretch total has been updated to: $' + str(total))
     except Exception as e:
       self.response.write('Sorry, something went wrong: ' + str(e))
 
+
 class PledgesExportHandler(webapp2.RequestHandler):
+
   def get(self):
     template = templates.GetTemplate("pledges-csv.html")
     self.response.write(template.render({}))
 
+
 def utc_to_boston_time(start_datetime_utc):
-  #TODO use pytz. Manual timezones make baby Jesus cry.
-  FOUR_HOURS = datetime.timedelta(seconds=4*60*60)
+  # TODO use pytz. Manual timezones make baby Jesus cry.
+  FOUR_HOURS = datetime.timedelta(seconds=4 * 60 * 60)
   gmt_minus_4 = start_datetime_utc - FOUR_HOURS
   return gmt_minus_4
 
+
 def boston_to_utc_time(gmt_minus_4):
-  #TODO use pytz. Manual timezones make baby Jesus cry.
-  FOUR_HOURS = datetime.timedelta(seconds=4*60*60)
+  # TODO use pytz. Manual timezones make baby Jesus cry.
+  FOUR_HOURS = datetime.timedelta(seconds=4 * 60 * 60)
   gmt = gmt_minus_4 + FOUR_HOURS
   return gmt
+
 
 def build_query(model, cursor=None, start_date=None, end_date=None, limit=None):
   query = model.all()
@@ -297,7 +313,8 @@ def build_query(model, cursor=None, start_date=None, end_date=None, limit=None):
   if end_date:
     end_datetime_utc = datetime.datetime.strptime(end_date, "%Y-%m-%d")
     # we want the end of the day
-    almost_day = datetime.timedelta(days=1) - datetime.timedelta(microseconds=1)
+    almost_day = datetime.timedelta(
+        days=1) - datetime.timedelta(microseconds=1)
     end_datetime_utc += almost_day
     end_datetime_boston = boston_to_utc_time(end_datetime_utc)
     query.filter('donationTime <=', end_datetime_boston)
@@ -307,17 +324,22 @@ def build_query(model, cursor=None, start_date=None, end_date=None, limit=None):
 
 
 class PledgesExportJSONHandler(webapp2.RequestHandler):
+
   def get(self):
-    pledge_cursor, wp_pledge_cursor = self.request.get("cursor", ':').split(':')
+    pledge_cursor, wp_pledge_cursor = self.request.get(
+        "cursor", ':').split(':')
     limit = int(self.request.get("limit", 100))
     start_date = self.request.get("start_date")
 
     end_date = self.request.get("end_date")
 
-    pledge_query = build_query(model.Pledge, pledge_cursor, start_date, end_date, limit)
-    wp_pledge_query = build_query(model.WpPledge, wp_pledge_cursor, start_date, end_date, limit)
+    pledge_query = build_query(
+        model.Pledge, pledge_cursor, start_date, end_date, limit)
+    wp_pledge_query = build_query(
+        model.WpPledge, wp_pledge_cursor, start_date, end_date, limit)
 
-    queries = itertools.chain(pledge_query.fetch(limit), wp_pledge_query.fetch(limit))
+    queries = itertools.chain(pledge_query.fetch(
+        limit), wp_pledge_query.fetch(limit))
     pledges = sorted(queries, key=lambda x: x.donationTime)[:limit]
 
     resp = {"pledges": [build_pledge_dict(pledge) for pledge in pledges]}
@@ -325,6 +347,7 @@ class PledgesExportJSONHandler(webapp2.RequestHandler):
     resp["next_cursor"] = cursor
 
     self.response.write(json.dumps(resp))
+
 
 def get_payment_gateway(pledge):
   if isinstance(pledge, model.WpPledge):
@@ -336,29 +359,33 @@ def get_payment_gateway(pledge):
   else:
     return 'STRIPE'
 
+
 def cents_to_dollar_str(cents):
   """Safely convert from cents to dollars"""
   TWOPLACES = decimal.Decimal('0.01')
   dollars = decimal.Decimal(cents).quantize(TWOPLACES) / 100
   return str(dollars)
 
+
 class Empty(object):
+
   def __getattr__(self, attr):
     return ''
+
 
 def build_pledge_dict(pledge):
   payer = pledge.stripeCustomer or pledge.paypalPayerID or pledge.bitpay_invoice_id
   date = utc_to_boston_time(pledge.donationTime)
   pledge_dict = {
-    'Payment Gateway': get_payment_gateway(pledge),
-    'Donation Date': date.strftime('%-m/%-d/%y %H:%M'),
-    'Amount ($)': cents_to_dollar_str(pledge.amountCents),
-    'Plege url_nonce': pledge.url_nonce,
-    'Payer Identifier': payer,
-    'Email': pledge.email,
-    'Type': pledge.pledge_type,
-    'Recurring': pledge.recurring,
-    'Source': pledge.source
+      'Payment Gateway': get_payment_gateway(pledge),
+      'Donation Date': date.strftime('%-m/%-d/%y %H:%M'),
+      'Amount ($)': cents_to_dollar_str(pledge.amountCents),
+      'Plege url_nonce': pledge.url_nonce,
+      'Payer Identifier': payer,
+      'Email': pledge.email,
+      'Type': pledge.pledge_type,
+      'Recurring': pledge.recurring,
+      'Source': pledge.source
   }
 
   # add user info
@@ -370,19 +397,19 @@ def build_pledge_dict(pledge):
   if user is None:
     user = Empty()
   pledge_dict.update({
-    'User url_nonce': user.url_nonce,
-    'First Name': user.first_name,
-    'Last Name': user.last_name,
-    'Address': user.address,
-    'Address 2': '',
-    'City': user.city,
-    'State': user.state,
-    'ZIP Code': user.zipCode,
-    'Phone': user.phone,
-    'Country': 'United States',
-    'Occupation': user.occupation,
-    'Employer': user.employer,
-    'Targeting': user.target or 'Whatever Helps'    
+      'User url_nonce': user.url_nonce,
+      'First Name': user.first_name,
+      'Last Name': user.last_name,
+      'Address': user.address,
+      'Address 2': '',
+      'City': user.city,
+      'State': user.state,
+      'ZIP Code': user.zipCode,
+      'Phone': user.phone,
+      'Country': 'United States',
+      'Occupation': user.occupation,
+      'Employer': user.employer,
+      'Targeting': user.target or 'Whatever Helps'
   })
   return pledge_dict
 
@@ -392,6 +419,7 @@ def MakeCommandHandler(cmd_cls):
      to be executed.
   """
   class H(webapp2.RequestHandler):
+
     def get(self):
       self.response.write("""
       <h1>You are about to run command "{}". Are you sure?</h1>
@@ -407,7 +435,8 @@ def MakeCommandHandler(cmd_cls):
       if 'cmds' not in self.app.registry:
         self.app.registry['cmds'] = {}
       if cmd_cls.SHORT_NAME not in self.app.registry['cmds']:
-        self.app.registry['cmds'][cmd_cls.SHORT_NAME] = cmd_cls(self.app.config)
+        self.app.registry['cmds'][
+            cmd_cls.SHORT_NAME] = cmd_cls(self.app.config)
       return self.app.registry['cmds'][cmd_cls.SHORT_NAME]
 
   return ('/admin/command/' + cmd_cls.SHORT_NAME, H)
@@ -416,14 +445,14 @@ def MakeCommandHandler(cmd_cls):
 COMMAND_HANDLERS = [MakeCommandHandler(c) for c in commands.COMMANDS]
 
 app = webapp2.WSGIApplication([
-  ('/admin/generate/pledge_amounts.csv', GeneratePledgeAmountsCsvHandler),
-  ('/admin/generate/pledges.csv', GeneratePledgesCsvHandler),
-  ('/admin/generate/pledges_full_data.csv', GeneratePledgesFullDataCsvHandler),
-  ('/admin/files(.+)/pledge_amounts.csv', CsvHandler),
-  ('/admin/files(.+)/pledges.csv', CsvHandler),
-  ('/admin/files(.+)/pledges_full_data.csv', CsvHandler),
-  ('/admin/pledges_export', PledgesExportHandler),
-  ('/admin/pledges_export/pledges.json', PledgesExportJSONHandler),
-  ('/admin/stretch', StretchHandler),
-  ('/admin/?', AdminDashboardHandler),
+    ('/admin/generate/pledge_amounts.csv', GeneratePledgeAmountsCsvHandler),
+    ('/admin/generate/pledges.csv', GeneratePledgesCsvHandler),
+    ('/admin/generate/pledges_full_data.csv', GeneratePledgesFullDataCsvHandler),
+    ('/admin/files(.+)/pledge_amounts.csv', CsvHandler),
+    ('/admin/files(.+)/pledges.csv', CsvHandler),
+    ('/admin/files(.+)/pledges_full_data.csv', CsvHandler),
+    ('/admin/pledges_export', PledgesExportHandler),
+    ('/admin/pledges_export/pledges.json', PledgesExportJSONHandler),
+    ('/admin/stretch', StretchHandler),
+    ('/admin/?', AdminDashboardHandler),
 ] + COMMAND_HANDLERS, debug=False, config=dict(env=env.get_env()))
