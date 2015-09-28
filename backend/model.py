@@ -142,6 +142,9 @@ class Secrets(db.Model):
   bitpay_api_key = db.StringProperty(default='')
 
   nationbuilder_token = db.StringProperty(default='')
+  
+  
+  
   @staticmethod
   def get():
     return Secrets.get_or_insert(key_name=Secrets.SINGLETON_KEY)
@@ -336,6 +339,9 @@ class Pledge(db.Model):
 
   # Whether recurring donation was upsold from the thank you page
   upsell = db.BooleanProperty(default=False)
+  
+  # Whether the additional address check failed in stripe
+  addressCheckPass = db.BooleanProperty(default=False)
 
   @staticmethod
   def create(email, stripe_customer_id, stripe_charge_id,

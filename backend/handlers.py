@@ -211,7 +211,7 @@ def pledge_helper(handler, data, stripe_customer_id, stripe_charge_id, paypal_pa
                              enddate=data['enddate'],
                              keep_donation=data['keep_donation'],
                              upsell=data['upsell'],
-                             addressCheckPass=data.get('addressCheck', True),
+                             addressCheckPass=data.get('addressCheckPass', True),
                              )
     logging.info('Added pledge to database')
     if data['subscribe']:
@@ -395,6 +395,7 @@ class PledgeHandler(webapp2.RequestHandler):
             logging.info('Address check: %s' % card_data['address_line1_check'])
             if card_data['address_line1_check'] == 'fail':
               data['addressCheckPass'] = False
+              # logging.warning('Your billing address did not validate')
               # Used to just fail all of these for matching funds
               # logging.warning('Your billing address did not validate')
               # self.error(400)
