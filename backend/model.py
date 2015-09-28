@@ -44,8 +44,8 @@ class Error(Exception): pass
 #  13: Added 'Use for Upton' value to Pledge.  This allows the pledge to be used
 #       for Upton campaign, if true
 #
-#  14: Added addressCheckPass to Pledge.  This will be false if Stripe returns false in 
-#       the address validation field.  In Lessig project, all earlier pledges can be assumed 
+#  14: Added addressCheckPass to Pledge.  This will be false if Stripe returns false in
+#       the address validation field.  In Lessig project, all earlier pledges can be assumed
 #       to have this set to True
 #
 MODEL_VERSION = 14
@@ -142,9 +142,9 @@ class Secrets(db.Model):
   bitpay_api_key = db.StringProperty(default='')
 
   nationbuilder_token = db.StringProperty(default='')
-  
-  
-  
+
+
+
   @staticmethod
   def get():
     return Secrets.get_or_insert(key_name=Secrets.SINGLETON_KEY)
@@ -339,7 +339,7 @@ class Pledge(db.Model):
 
   # Whether recurring donation was upsold from the thank you page
   upsell = db.BooleanProperty(default=False)
-  
+
   # Whether the additional address check failed in stripe
   addressCheckPass = db.BooleanProperty(default=False)
 
@@ -442,7 +442,7 @@ def addPledge(email,
               paypal_txn_id=None, paypal_payer_id=None,
               address=None, city=None, state=None, zipCode=None,
               bitpay_invoice_id = None, recurring = None,
-              recurrence_period = None, enddate = None, keep_donation = None, 
+              recurrence_period = None, enddate = None, keep_donation = None,
               upsell = None, addressCheckPass = True):
   """Creates a User model if one doesn't exist, finding one if one already
   does, using the email as a user key. Then adds a Pledge to the User with
@@ -718,7 +718,7 @@ class CandidateVote(db.Model):
     CandidateVote(model_version=MODEL_VERSION,
                   email=email,
                   name=name.strip().title()).put()
-                  
+
 class SimpleKv(db.Model):
   """A store for blobs of data that need to be temporarily stored somewhere.
 
@@ -754,7 +754,7 @@ def addNationBuilderDonation(email,
               paypal_txn_id=None, paypal_payer_id=None,
               address=None, city=None, state=None, zipCode=None,
               bitpay_invoice_id = None, recurring = None, enddate = None,
-	      recurrence_period = None, nationBuilderVars = None):
+              recurrence_period = None, nationBuilderVars = None):
     nationbuilder_token = Secrets.get().nationbuilder_token
     donation = {'amount_in_cents':amount_cents,
                 'email':email,
@@ -800,13 +800,13 @@ def addNationBuilderDonation(email,
     if bitpay_invoice_id:
         donation['bitpay_invoice_id'] = bitpay_invoice_id
     if recurring:
-	donation['recurring'] = recurring
+      donation['recurring'] = recurring
     if enddate:
-	donation['end_date'] = enddate
+      donation['end_date'] = enddate
     if recurrence_period:
-	donation['recurrence_period'] = recurrence_period
+      donation['recurrence_period'] = recurrence_period
     if nationBuilderVars:
-	donation.update(nationBuilderVars)
+      donation.update(nationBuilderVars)
 
     nation_slug = "mayday"
     access_token_url = "http://" + nation_slug + ".nationbuilder.com/oauth/token"

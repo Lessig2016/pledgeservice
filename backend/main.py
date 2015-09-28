@@ -178,15 +178,15 @@ class DonationTypeUpdateHandler(webapp2.RequestHandler):
       self.error(404)
       self.response.write('user not found')
       return
-      
+
     num_conditional_pledges = 0
     num_donations = 0
     amount_pledges = 0
     amount_donations = 0
     for pledge in model.Pledge.all().filter('email =', user.email):
       if pledge.fundraisingRound == 1:
-        continue 
-       
+        continue
+
       if pledge.pledge_type == 'DONATION':
         num_donations += 1
         amount_donations += pledge.amountCents
@@ -195,7 +195,7 @@ class DonationTypeUpdateHandler(webapp2.RequestHandler):
         amount_pledges += pledge.amountCents
         pledge.pledge_type = 'DONATION'
         pledge.put()
-    
+
     template_vars = {
       'num_donations':num_donations,
       'amount_donations':amount_donations/100,
@@ -203,8 +203,8 @@ class DonationTypeUpdateHandler(webapp2.RequestHandler):
       'amount_pledges':amount_pledges/100,
       'email':user.email
     }
-    template = templates.GetTemplate('donation-update.html')    
-    self.response.write(template.render(template_vars))    
+    template = templates.GetTemplate('donation-update.html')
+    self.response.write(template.render(template_vars))
 
 
 class UptonUpdateHandler(webapp2.RequestHandler):
@@ -218,40 +218,40 @@ class UptonUpdateHandler(webapp2.RequestHandler):
 
     num_donations = 0
     amount_donations = 0
-    
-    for pledge in model.Pledge.all().filter('email =', user.email):             
+
+    for pledge in model.Pledge.all().filter('email =', user.email):
         num_donations += 1
         amount_donations += pledge.amountCents
         pledge.allowUpton = True
         pledge.put()
-        
+
     template_vars = {
       'num_donations':num_donations,
-      'amount_donations':amount_donations/100,   
+      'amount_donations':amount_donations/100,
       'email':user.email
     }
-    template = templates.GetTemplate('upton-update.html')    
-    self.response.write(template.render(template_vars))    
-    
+    template = templates.GetTemplate('upton-update.html')
+    self.response.write(template.render(template_vars))
+
 class UptonUpdateNoNonceHandler(webapp2.RequestHandler):
-    def get(self):
-	template = templates.GetTemplate('upton-update-no-nonce.html')
-	self.response.write(template.render())
+  def get(self):
+    template = templates.GetTemplate('upton-update-no-nonce.html')
+    self.response.write(template.render())
 
 class SubscribeEmailPage(webapp2.RequestHandler):
-    def get(self):
-	template = templates.GetTemplate('auto-email-subscribe.html')
-	self.response.write(template.render())
+  def get(self):
+    template = templates.GetTemplate('auto-email-subscribe.html')
+    self.response.write(template.render())
 
 class RootRedirectHandler(webapp2.RequestHandler):
-  def get(self):  
+  def get(self):
     self.redirect('/donate')
 
 HANDLERS = [
   ('/', RootRedirectHandler),
   ('/total', GetTotalHandler),
-  (r'/donation-update/(\w+)', DonationTypeUpdateHandler), 
-  (r'/upton-update/(\w+)', UptonUpdateHandler),     
+  (r'/donation-update/(\w+)', DonationTypeUpdateHandler),
+  (r'/upton-update/(\w+)', UptonUpdateHandler),
   (r'/upton-update/', UptonUpdateNoNonceHandler),
   (r'/subscribe-email/', SubscribeEmailPage),
   (r'/user-update/(\w+)', UserUpdateHandler),

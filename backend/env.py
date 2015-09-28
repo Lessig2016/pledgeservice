@@ -63,7 +63,7 @@ class ProdStripe(handlers.StripeBackend):
       logging.info('Stripe returned error for customer: %s ' % customer_id)
       raise handlers.PaymentError(str(e))
     return charge.id
-    
+
   def CreateCustomerWithPlan(self, email, card_token, amount_dollars,
     recurrence_period, upsell):
     stripe.api_key = self.stripe_private_key
@@ -75,7 +75,7 @@ class ProdStripe(handlers.StripeBackend):
       plan = "one_dollar_weekly"
     else:
       plan = "one_dollar_monthly"
-      
+
     customer = stripe.Customer.create(
       card=card_token,
       email=email,
@@ -88,10 +88,10 @@ class ProdStripe(handlers.StripeBackend):
   def UpsellCustomerToMonthlySubscription(self, stripe_customer_id, quantity):
     stripe.api_key = self.stripe_private_key
     customer = stripe.Customer.retrieve(stripe_customer_id)
-    customer.subscriptions.create(plan="one_dollar_monthly", 
+    customer.subscriptions.create(plan="one_dollar_monthly",
                                   quantity=quantity,
                                   trial_end=datetime.datetime.now() + datetime.timedelta(days=30))
-                                  
+
     return customer
 
 class FakeStripe(handlers.StripeBackend):
@@ -157,13 +157,13 @@ class MailchimpSubscriber(handlers.MailingListSubscriber):
   def Subscribe(self, email, first_name, last_name, amount_cents, ip_addr, time,
                 source, phone=None, zipcode=None, volunteer=None, skills=None, rootstrikers=None,
                 nonce=None, pledgePageSlug=None, otherVars = None,
-		is_supporter=None, nationBuilderVars=None, recurring=None):
+                is_supporter=None, nationBuilderVars=None, recurring=None):
     deferred.defer(_subscribe_to_mailchimp,
                    email, first_name, last_name,
                    amount_cents, ip_addr, source, phone, zipcode,
-                   volunteer, skills, rootstrikers, 
+                   volunteer, skills, rootstrikers,
                    nonce, pledgePageSlug, otherVars, recurring)
-                   
+
     deferred.defer(_subscribe_to_nationbuilder,
                    email, first_name, last_name,
                    amount_cents, ip_addr, source, phone, zipcode,
@@ -206,11 +206,11 @@ def _subscribe_to_nationbuilder(email_to_subscribe, first_name, last_name,
                             amount, request_ip, source, phone=None, zipcode=None,
                             volunteer=None, skills=None, rootstrikers=None,
                             nonce=None, pledgePageSlug=None, otherVars=None,
-			    is_supporter=None, nationBuilderVars=None):
+                            is_supporter=None, nationBuilderVars=None):
   nationbuilder_token = model.Secrets.get().nationbuilder_token
   if nationbuilder_token == '':
     return
-    
+
   nation_slug = "mayday"
   access_token_url = "http://" + nation_slug + ".nationbuilder.com/oauth/token"
   authorize_url = nation_slug + ".nationbuilder.com/oauth/authorize"
@@ -223,7 +223,7 @@ def _subscribe_to_nationbuilder(email_to_subscribe, first_name, last_name,
     base_url = nation_slug + ".nationbuilder.com")
   session = service.get_session(nationbuilder_token)
   person = {
-    'email':email_to_subscribe 
+    'email':email_to_subscribe
   }
 
   if first_name:
@@ -235,9 +235,9 @@ def _subscribe_to_nationbuilder(email_to_subscribe, first_name, last_name,
 
   if rootstrikers:
     if rootstrikers == "Yes":
-	person["rootstrikers_subscription"] = True
+      person["rootstrikers_subscription"] = True
     else:
-	person["rootstrikers_subscription"] = False
+      person["rootstrikers_subscription"] = False
 
   if is_supporter:
     person["is_supporter"] = True
@@ -245,9 +245,9 @@ def _subscribe_to_nationbuilder(email_to_subscribe, first_name, last_name,
 
   if volunteer:
     if volunteer == "Yes":
-	person["is_volunteer"] = True
+      person["is_volunteer"] = True
     else:
-	person["is_volunteer"] = False
+      person["is_volunteer"] = False
 
   if phone:
     person["phone"] = phone
@@ -261,7 +261,7 @@ def _subscribe_to_nationbuilder(email_to_subscribe, first_name, last_name,
     person['uuid'] = nonce
 
   if pledgePageSlug:
-    person['pledge_page_slug'] = pledgePageSlug 
+    person['pledge_page_slug'] = pledgePageSlug
 
   if otherVars:
     merge13 = otherVars.get('MERGE13', '')
@@ -269,9 +269,9 @@ def _subscribe_to_nationbuilder(email_to_subscribe, first_name, last_name,
       person['fundraising_email_subscription'] = merge13
     else:
       person['fundraising_email_subscription'] = 'Yes'
-  else: 
+  else:
     person['fundraising_email_subscription'] = 'Yes'
-    
+
   if nationBuilderVars:
     for key in nationBuilderVars.keys():
       person[key] = nationBuilderVars[key]
@@ -328,10 +328,10 @@ def _subscribe_to_mailchimp(email_to_subscribe, first_name, last_name,
 
   if pledgePageSlug is not None:
     merge_vars['PPURL'] = pledgePageSlug
-    
+
   if otherVars is not None:
     merge_vars.update(otherVars)
-    
+
   if recurring is not None:
     merge_vars['RECURRING'] = recurring
 
