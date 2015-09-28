@@ -1050,7 +1050,8 @@ class PaypalStartHandler(webapp2.RequestHandler):
     data_key = kv.put()
 
     rc, paypal_url = paypal.SetExpressCheckout(
-        self.request.host_url, str(data_key))
+        self.request.host_url, data['amountCents'], 
+        data['email'], str(data_key))
     if rc:
       json.dump(dict(paypal_url=paypal_url), self.response)
       return
@@ -1112,6 +1113,7 @@ class PaypalReturnHandler(webapp2.RequestHandler):
     cents = int(float(amount)) * 100
     data['amountCents'] = cents
     payer_id = results['PAYERID'][0]
+    logging.info("In Results CUSTOM got: " + results['CUSTOM'][0])
     custom = self._get_custom_data(results['CUSTOM'][0])
 
     cemail = custom['email'][0].lower() if custom['email'][0] else ''
@@ -1161,7 +1163,7 @@ class PaypalReturnHandler(webapp2.RequestHandler):
       self.response.write(pprint.pformat(results))
       return
 
-  def _get_custom_data(key_or_uri_dict):
+  def _get_custom_data(self, key_or_uri_dict):
     """The custom data field returned by paypal is either a URI encoded
     dictionary, or a DB key for a SimpleKv with JSON data as the value. To
     support the transition from the former to the latter, we first check the
