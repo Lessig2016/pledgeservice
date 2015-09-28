@@ -18,6 +18,7 @@ def send_request(fields):
 
     form_data = urllib.urlencode(fields)
 
+    urlfetch.set_default_fetch_deadline(30)
     result = urlfetch.fetch(url=config.paypal_api_url, payload=form_data, method=urlfetch.POST,
                 headers={'Content-Type': 'application/x-www-form-urlencoded'})
     result_map = urlparse.parse_qs(result.content)
