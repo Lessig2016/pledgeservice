@@ -1116,15 +1116,16 @@ class PaypalReturnHandler(webapp2.RequestHandler):
     logging.info("In Results CUSTOM got: " + results['CUSTOM'][0])
     custom = self._get_custom_data(results['CUSTOM'][0])
 
-    cemail = custom['email'][0].lower() if custom['email'][0] else ''
+    cemail = custom['email'].lower() if custom['email'] else ''
     ppemail = paypal_email.lower() if paypal_email else ''
 
     if cemail != ppemail:
-        logging.warning("User entered email [%s], but purchased with email [%s]" % (custom['email'][0], paypal_email))
+        logging.warning("User entered email [%s], but purchased with email [%s]" % (custom['email'], paypal_email))
 
+    logging.info('Got back Custom: ' + str(custom))
     for v in { 'email', 'phone', 'occupation', 'employer', 'target', 'subscribe', 'anonymous', 'pledgeType', 'team', 'source', 'surveyResult' }:
       if v in custom:
-        data[v] = custom[v][0]
+        data[v] = custom[v]
       else:
         data[v] = None
 
