@@ -11,7 +11,9 @@ from google.appengine.ext import db
 
 import cache
 
-class Error(Exception): pass
+
+class Error(Exception):
+  pass
 
 # Used to indicate which data objects were created in which version of
 # the app, in case we need to special-case some logic for objects
@@ -44,8 +46,8 @@ class Error(Exception): pass
 #  13: Added 'Use for Upton' value to Pledge.  This allows the pledge to be used
 #       for Upton campaign, if true
 #
-#  14: Added addressCheckPass to Pledge.  This will be false if Stripe returns false in 
-#       the address validation field.  In Lessig project, all earlier pledges can be assumed 
+#  14: Added addressCheckPass to Pledge.  This will be false if Stripe returns false in
+#       the address validation field.  In Lessig project, all earlier pledges can be assumed
 #       to have this set to True
 #
 MODEL_VERSION = 14
@@ -88,12 +90,12 @@ class Config(object):
       bitpay_api_key = s.bitpay_api_key
 
     if 'productionPaypal' in j and j['productionPaypal']:
-      paypal_api_url =  "https://api-3t.paypal.com/nvp"
+      paypal_api_url = "https://api-3t.paypal.com/nvp"
       paypal_url = "https://www.paypal.com/webscr"
       paypal_user = s.paypal_user
       paypal_password = s.paypal_password
       paypal_signature = s.paypal_signature
-    else: # Use the Sanbox
+    else:  # Use the Sanbox
       paypal_api_url = "https://api-3t.sandbox.paypal.com/nvp"
       paypal_url = "https://www.sandbox.paypal.com/webscr"
       paypal_user = s.paypal_sandbox_user
@@ -101,18 +103,18 @@ class Config(object):
       paypal_signature = s.paypal_sandbox_signature
 
     Config._instance = Config.ConfigType(
-      app_name = j['appName'],
-      stripe_public_key=stripe_public_key,
-      stripe_private_key=stripe_private_key,
-      mailchimp_api_key=s.mailchimp_api_key,
-      mailchimp_list_id=s.mailchimp_list_id,
-      paypal_user = paypal_user,
-      paypal_password = paypal_password,
-      paypal_signature = paypal_signature,
-      paypal_api_url = paypal_api_url,
-      paypal_url = paypal_url,
-      bitpay_api_key = bitpay_api_key
-      )
+        app_name=j['appName'],
+        stripe_public_key=stripe_public_key,
+        stripe_private_key=stripe_private_key,
+        mailchimp_api_key=s.mailchimp_api_key,
+        mailchimp_list_id=s.mailchimp_list_id,
+        paypal_user=paypal_user,
+        paypal_password=paypal_password,
+        paypal_signature=paypal_signature,
+        paypal_api_url=paypal_api_url,
+        paypal_url=paypal_url,
+        bitpay_api_key=bitpay_api_key
+    )
     return Config._instance
 
 
@@ -142,9 +144,7 @@ class Secrets(db.Model):
   bitpay_api_key = db.StringProperty(default='')
 
   nationbuilder_token = db.StringProperty(default='')
-  
-  
-  
+
   @staticmethod
   def get():
     return Secrets.get_or_insert(key_name=Secrets.SINGLETON_KEY)
@@ -156,6 +156,7 @@ class Secrets(db.Model):
     if s is None:
       s = Secrets(key_name=Secrets.SINGLETON_KEY)
     s.put()
+
 
 class User(db.Model):
   model_version = db.IntegerProperty()
@@ -183,7 +184,6 @@ class User(db.Model):
   # whether or not the pledge was donated specifically for a particular
   # political affiliation
   target = db.StringProperty(required=False)
-
 
   # the results of a survey from mayday.us/goodfight
   surveyResult = db.StringProperty(required=False)
@@ -256,8 +256,8 @@ class TempPledge(db.Model):
   city = db.StringProperty()
   state = db.StringProperty()
   zipCode = db.StringProperty()
-  bitcoinConfirm=db.BooleanProperty(required=False, default=False)
-  keep_donation=db.BooleanProperty(default=False)
+  bitcoinConfirm = db.BooleanProperty(required=False, default=False)
+  keep_donation = db.BooleanProperty(default=False)
 
   team = db.StringProperty()
   source = db.StringProperty(required=False)
@@ -284,7 +284,7 @@ class Pledge(db.Model):
   paypalPayerID = db.StringProperty()
   paypalTransactionID = db.StringProperty()
 
-  #BitPay specific field
+  # BitPay specific field
   bitpay_invoice_id = db.StringProperty()
 
   # when the donation occurred
@@ -339,7 +339,7 @@ class Pledge(db.Model):
 
   # Whether recurring donation was upsold from the thank you page
   upsell = db.BooleanProperty(default=False)
-  
+
   # Whether the additional address check failed in stripe
   addressCheckPass = db.BooleanProperty(default=False)
 
@@ -391,7 +391,7 @@ class TeamTotal(db.Model):
     if tt is not None:
       return tt
     tt = cls(key_name=team_id, team=team_id, totalCents=pledge_8_count,
-      num_pledges=num_pledges)
+             num_pledges=num_pledges)
     tt.put()
     return tt
 
@@ -441,9 +441,9 @@ def addPledge(email,
               stripe_customer_id=None, stripe_charge_id=None,
               paypal_txn_id=None, paypal_payer_id=None,
               address=None, city=None, state=None, zipCode=None,
-              bitpay_invoice_id = None, recurring = None,
-              recurrence_period = None, enddate = None, keep_donation = None, 
-              upsell = None, addressCheckPass = True):
+              bitpay_invoice_id=None, recurring=None,
+              recurrence_period=None, enddate=None, keep_donation=None,
+              upsell=None, addressCheckPass=True):
   """Creates a User model if one doesn't exist, finding one if one already
   does, using the email as a user key. Then adds a Pledge to the User with
   the given card token as a new credit card.
@@ -457,10 +457,10 @@ def addPledge(email,
 
   # first, let's find the user by email
   user = User.createOrUpdate(
-    email=email, first_name=first_name, last_name=last_name,
-    occupation=occupation, employer=employer, phone=phone, target=target,
-    mail_list_optin=mail_list_optin, surveyResult=surveyResult,
-    address=address, city=city, state=state, zipCode=zipCode )
+      email=email, first_name=first_name, last_name=last_name,
+      occupation=occupation, employer=employer, phone=phone, target=target,
+      mail_list_optin=mail_list_optin, surveyResult=surveyResult,
+      address=address, city=city, state=state, zipCode=zipCode)
 
   return user, Pledge.create(email=email,
                              stripe_customer_id=stripe_customer_id,
@@ -472,13 +472,14 @@ def addPledge(email,
                              team=team,
                              source=source,
                              anonymous=anonymous,
-                             bitpay_invoice_id = bitpay_invoice_id,
-                             recurring = recurring,
-                             enddate = enddate,
-                             recurrence_period = recurrence_period,
-                             keep_donation = keep_donation,
-                             upsell = upsell,
-                             addressCheckPass = addressCheckPass)
+                             bitpay_invoice_id=bitpay_invoice_id,
+                             recurring=recurring,
+                             enddate=enddate,
+                             recurrence_period=recurrence_period,
+                             keep_donation=keep_donation,
+                             upsell=upsell,
+                             addressCheckPass=addressCheckPass)
+
 
 class WpPledge(db.Model):
   # wp_post_id is also the model key
@@ -496,8 +497,7 @@ class WpPledge(db.Model):
 
   url_nonce = db.StringProperty(required=True)
 
-  keep_donation=db.BooleanProperty(default=False)
-
+  keep_donation = db.BooleanProperty(default=False)
 
 
 class ChargeStatus(db.Model):
@@ -600,7 +600,6 @@ class ChargeStatus(db.Model):
                             parent=pledge_key)
 
 
-
 class StretchCheckTotal(db.Model):
   dollars = db.IntegerProperty()
 
@@ -611,7 +610,7 @@ class StretchCheckTotal(db.Model):
       total.dollars = newTotal
       total.put()
     else:
-      newTotalForDB = cls(dollars = newTotal)
+      newTotalForDB = cls(dollars=newTotal)
       newTotalForDB.put()
 
   @classmethod
@@ -626,6 +625,7 @@ class StretchCheckTotal(db.Model):
 SHARD_KEY_TEMPLATE = 'shard-{}-{:d}'
 SHARD_COUNT = 50
 STRETCH_CACHE_MISS_TOTAL = 0
+
 
 class ShardedCounter(db.Model):
   count = db.IntegerProperty(default=0)
@@ -678,6 +678,7 @@ class ShardedCounter(db.Model):
 
     cache.IncrementShardedCounterTotal(name, delta)
 
+
 class Issue(db.Model):
   name = db.StringProperty(required=True)
   count = db.IntegerProperty(required=False, default=1)
@@ -697,6 +698,7 @@ class Issue(db.Model):
     issue.put()
     return issue
 
+
 class IssueVote(db.Model):
   email = db.StringProperty(required=True)
   name = db.StringProperty(required=True)
@@ -708,6 +710,7 @@ class IssueVote(db.Model):
               email=email,
               name=name.strip().title()).put()
 
+
 class CandidateVote(db.Model):
   email = db.StringProperty(required=True)
   name = db.StringProperty(required=True)
@@ -718,7 +721,8 @@ class CandidateVote(db.Model):
     CandidateVote(model_version=MODEL_VERSION,
                   email=email,
                   name=name.strip().title()).put()
-                  
+
+
 class SimpleKv(db.Model):
   """A store for blobs of data that need to be temporarily stored somewhere.
 
@@ -737,6 +741,8 @@ class SimpleKv(db.Model):
 # source of truth for anything!
 
 # Generated by commands.FindMissingDataUsers.
+
+
 class MissingDataUsersSecondary(db.Model):
   email = db.EmailProperty(required=True)
 
@@ -747,79 +753,79 @@ class MissingDataUsersSecondary(db.Model):
 
 
 def addNationBuilderDonation(email,
-              amount_cents, pledge_type,
-              first_name, last_name, occupation, employer, phone,
-              target, team, source, mail_list_optin, anonymous, surveyResult=None,
-              stripe_customer_id=None, stripe_charge_id=None,
-              paypal_txn_id=None, paypal_payer_id=None,
-              address=None, city=None, state=None, zipCode=None,
-              bitpay_invoice_id = None, recurring = None, enddate = None,
-	      recurrence_period = None, nationBuilderVars = None):
-    nationbuilder_token = Secrets.get().nationbuilder_token
-    donation = {'amount_in_cents':amount_cents,
-                'email':email,
-                'succeeded_at': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                }
-    donation['billing_address'] = {}
-    if first_name:
-        donation['first_name'] = first_name
-    if last_name:
-        donation['last_name'] = last_name
-    if occupation:
-        donation['occupation'] = occupation
-    if employer:
-        donation['employer'] = employer
-    if phone:
-        pass
-    if anonymous:
-        pass
-    if target:
-        pass
-    if team:
-        pass
-    if source:
-        pass
-    if surveyResult:
-        pass
-    if stripe_customer_id:
-        donation['stripe_customer_id'] = stripe_customer_id
-    if stripe_charge_id:
-        donation['stripe_charge_id'] = stripe_charge_id
-    if paypal_txn_id:
-        donation['paypal_txn_id'] = paypal_txn_id
-    if paypal_payer_id:
-        donation['paypal_payer_id'] = paypal_payer_id
-    if address:
-        donation['billing_address']['address1'] = address
-    if city:
-        donation['billing_address']['city'] = city
-    if state:
-        donation['billing_address']['state'] = state
-    if zipCode:
-        donation['billing_address']['zip'] = zipCode
-    if bitpay_invoice_id:
-        donation['bitpay_invoice_id'] = bitpay_invoice_id
-    if recurring:
-	donation['recurring'] = recurring
-    if enddate:
-	donation['end_date'] = enddate
-    if recurrence_period:
-	donation['recurrence_period'] = recurrence_period
-    if nationBuilderVars:
-	donation.update(nationBuilderVars)
+                             amount_cents, pledge_type,
+                             first_name, last_name, occupation, employer, phone,
+                             target, team, source, mail_list_optin, anonymous, surveyResult=None,
+                             stripe_customer_id=None, stripe_charge_id=None,
+                             paypal_txn_id=None, paypal_payer_id=None,
+                             address=None, city=None, state=None, zipCode=None,
+                             bitpay_invoice_id=None, recurring=None, enddate=None,
+                             recurrence_period=None, nationBuilderVars=None):
+  nationbuilder_token = Secrets.get().nationbuilder_token
+  donation = {'amount_in_cents': amount_cents,
+              'email': email,
+              'succeeded_at': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+              }
+  donation['billing_address'] = {}
+  if first_name:
+    donation['first_name'] = first_name
+  if last_name:
+    donation['last_name'] = last_name
+  if occupation:
+    donation['occupation'] = occupation
+  if employer:
+    donation['employer'] = employer
+  if phone:
+    pass
+  if anonymous:
+    pass
+  if target:
+    pass
+  if team:
+    pass
+  if source:
+    pass
+  if surveyResult:
+    pass
+  if stripe_customer_id:
+    donation['stripe_customer_id'] = stripe_customer_id
+  if stripe_charge_id:
+    donation['stripe_charge_id'] = stripe_charge_id
+  if paypal_txn_id:
+    donation['paypal_txn_id'] = paypal_txn_id
+  if paypal_payer_id:
+    donation['paypal_payer_id'] = paypal_payer_id
+  if address:
+    donation['billing_address']['address1'] = address
+  if city:
+    donation['billing_address']['city'] = city
+  if state:
+    donation['billing_address']['state'] = state
+  if zipCode:
+    donation['billing_address']['zip'] = zipCode
+  if bitpay_invoice_id:
+    donation['bitpay_invoice_id'] = bitpay_invoice_id
+  if recurring:
+    donation['recurring'] = recurring
+  if enddate:
+    donation['end_date'] = enddate
+  if recurrence_period:
+    donation['recurrence_period'] = recurrence_period
+  if nationBuilderVars:
+    donation.update(nationBuilderVars)
 
-    nation_slug = "mayday"
-    access_token_url = "http://" + nation_slug + ".nationbuilder.com/oauth/token"
-    authorize_url = nation_slug + ".nationbuilder.com/oauth/authorize"
-    service = OAuth2Service(
-        client_id = "",
-        client_secret = "",
-        name = "anyname",
-        authorize_url = authorize_url,
-        access_token_url = access_token_url,
-        base_url = nation_slug + ".nationbuilder.com")
-    session = service.get_session(nationbuilder_token)
-    response = session.post('https://' + nation_slug +".nationbuilder.com/api/v1/donations",
-      data=json.dumps({'donation':donation}),
-      headers={"content-type":"application/json"}
-    )
+  nation_slug = "mayday"
+  access_token_url = "http://" + nation_slug + ".nationbuilder.com/oauth/token"
+  authorize_url = nation_slug + ".nationbuilder.com/oauth/authorize"
+  service = OAuth2Service(
+      client_id="",
+      client_secret="",
+      name="anyname",
+      authorize_url=authorize_url,
+      access_token_url=access_token_url,
+      base_url=nation_slug + ".nationbuilder.com")
+  session = service.get_session(nationbuilder_token)
+  response = session.post('https://' + nation_slug + ".nationbuilder.com/api/v1/donations",
+                          data=json.dumps({'donation': donation}),
+                          headers={"content-type": "application/json"}
+                          )

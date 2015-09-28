@@ -17,11 +17,14 @@ import templates
 import util
 import wp_import
 
-class Error(Exception): pass
+
+class Error(Exception):
+  pass
 
 
 # TODO(hjfreyer): Tests!!
 class ContactHandler(webapp2.RequestHandler):
+
   def post(self):
     data = json.loads(self.request.body)
     ascii_name = data["name"].encode('ascii', errors='ignore')
@@ -31,7 +34,7 @@ class ContactHandler(webapp2.RequestHandler):
 
     replyto = '%s <%s>' % (ascii_name, ascii_email)
     message = mail.EmailMessage(sender=('Team Lessig no-reply <noreply@%s.appspotmail.com>' %
-                                           model.Config.get().app_name),
+                                        model.Config.get().app_name),
                                 reply_to=replyto,
                                 subject=ascii_subject)
     message.to = "info@lessig2016.us"
@@ -46,6 +49,7 @@ class ContactHandler(webapp2.RequestHandler):
 
 # DEPRECATED: Remove in favor of handlers.TotalHandler
 class GetTotalHandler(webapp2.RequestHandler):
+
   def get(self):
     team = self.request.get("team")
     if team:
@@ -55,7 +59,7 @@ class GetTotalHandler(webapp2.RequestHandler):
              handlers.TotalHandler.DEMOCRACY_DOT_COM_BALANCE +
              handlers.TotalHandler.CHECKS_BALANCE)
     total += model.ShardedCounter.get_count('TOTAL-5')
-    total = int(total/100) * 100
+    total = int(total / 100) * 100
     self.response.headers['Content-Type'] = 'application/javascript'
     self.response.write('%s(%d)' % (self.request.get('callback'), total))
 
@@ -77,6 +81,7 @@ class GetTotalHandler(webapp2.RequestHandler):
 
 
 class EmbedHandler(webapp2.RequestHandler):
+
   def get(self):
     if self.request.get('widget') == '1':
       self.redirect('/embed.html')
@@ -85,6 +90,7 @@ class EmbedHandler(webapp2.RequestHandler):
 
 
 class UserUpdateHandler(webapp2.RequestHandler):
+
   def get(self, url_nonce):
     user = model.User.all().filter('url_nonce =', url_nonce).get()
     if user is None:
@@ -118,6 +124,7 @@ class UserUpdateHandler(webapp2.RequestHandler):
 
 
 class UserInfoHandler(webapp2.RequestHandler):
+
   def get(self, url_nonce):
     util.EnableCors(self)
     user = model.User.all().filter('url_nonce =', url_nonce).get()
@@ -130,8 +137,8 @@ class UserInfoHandler(webapp2.RequestHandler):
     biggest_pledge = None
     biggest_amount = 0
     for pledge in itertools.chain(
-        model.Pledge.all().filter('email =', user.email),
-        model.WpPledge.all().filter('email =', user.email)):
+            model.Pledge.all().filter('email =', user.email),
+            model.WpPledge.all().filter('email =', user.email)):
       if (pledge.amountCents or 0) >= biggest_amount:
         biggest_pledge = pledge
         biggest_amount = (pledge.amountCents or 0)
@@ -162,15 +169,17 @@ class UserInfoHandler(webapp2.RequestHandler):
     self.response.headers['Content-Type'] = 'application/javascript'
     self.response.write(json.dumps({
         "user": {
-          "name": user_name,
-          "email": user.email,
-          "pledge_amount_cents": biggest_amount,
-          "zip_code": zip_code}}))
+            "name": user_name,
+            "email": user.email,
+            "pledge_amount_cents": biggest_amount,
+            "zip_code": zip_code}}))
 
   def options(self):
     util.EnableCors(self)
 
+
 class DonationTypeUpdateHandler(webapp2.RequestHandler):
+
   def get(self, url_nonce):
     util.EnableCors(self)
     user = model.User.all().filter('url_nonce =', url_nonce).get()
@@ -178,15 +187,15 @@ class DonationTypeUpdateHandler(webapp2.RequestHandler):
       self.error(404)
       self.response.write('user not found')
       return
-      
+
     num_conditional_pledges = 0
     num_donations = 0
     amount_pledges = 0
     amount_donations = 0
     for pledge in model.Pledge.all().filter('email =', user.email):
       if pledge.fundraisingRound == 1:
-        continue 
-       
+        continue
+
       if pledge.pledge_type == 'DONATION':
         num_donations += 1
         amount_donations += pledge.amountCents
@@ -195,19 +204,20 @@ class DonationTypeUpdateHandler(webapp2.RequestHandler):
         amount_pledges += pledge.amountCents
         pledge.pledge_type = 'DONATION'
         pledge.put()
-    
+
     template_vars = {
-      'num_donations':num_donations,
-      'amount_donations':amount_donations/100,
-      'num_conditional_pledges':num_conditional_pledges,
-      'amount_pledges':amount_pledges/100,
-      'email':user.email
+        'num_donations': num_donations,
+        'amount_donations': amount_donations / 100,
+        'num_conditional_pledges': num_conditional_pledges,
+        'amount_pledges': amount_pledges / 100,
+        'email': user.email
     }
-    template = templates.GetTemplate('donation-update.html')    
-    self.response.write(template.render(template_vars))    
+    template = templates.GetTemplate('donation-update.html')
+    self.response.write(template.render(template_vars))
 
 
 class UptonUpdateHandler(webapp2.RequestHandler):
+
   def get(self, url_nonce):
     util.EnableCors(self)
     user = model.User.all().filter('url_nonce =', url_nonce).get()
@@ -218,48 +228,54 @@ class UptonUpdateHandler(webapp2.RequestHandler):
 
     num_donations = 0
     amount_donations = 0
-    
-    for pledge in model.Pledge.all().filter('email =', user.email):             
-        num_donations += 1
-        amount_donations += pledge.amountCents
-        pledge.allowUpton = True
-        pledge.put()
-        
+
+    for pledge in model.Pledge.all().filter('email =', user.email):
+      num_donations += 1
+      amount_donations += pledge.amountCents
+      pledge.allowUpton = True
+      pledge.put()
+
     template_vars = {
-      'num_donations':num_donations,
-      'amount_donations':amount_donations/100,   
-      'email':user.email
+        'num_donations': num_donations,
+        'amount_donations': amount_donations / 100,
+        'email': user.email
     }
-    template = templates.GetTemplate('upton-update.html')    
-    self.response.write(template.render(template_vars))    
-    
+    template = templates.GetTemplate('upton-update.html')
+    self.response.write(template.render(template_vars))
+
+
 class UptonUpdateNoNonceHandler(webapp2.RequestHandler):
-    def get(self):
-	template = templates.GetTemplate('upton-update-no-nonce.html')
-	self.response.write(template.render())
+
+  def get(self):
+    template = templates.GetTemplate('upton-update-no-nonce.html')
+    self.response.write(template.render())
+
 
 class SubscribeEmailPage(webapp2.RequestHandler):
-    def get(self):
-	template = templates.GetTemplate('auto-email-subscribe.html')
-	self.response.write(template.render())
+
+  def get(self):
+    template = templates.GetTemplate('auto-email-subscribe.html')
+    self.response.write(template.render())
+
 
 class RootRedirectHandler(webapp2.RequestHandler):
-  def get(self):  
+
+  def get(self):
     self.redirect('/donate')
 
 HANDLERS = [
-  ('/', RootRedirectHandler),
-  ('/total', GetTotalHandler),
-  (r'/donation-update/(\w+)', DonationTypeUpdateHandler), 
-  (r'/upton-update/(\w+)', UptonUpdateHandler),     
-  (r'/upton-update/', UptonUpdateNoNonceHandler),
-  (r'/subscribe-email/', SubscribeEmailPage),
-  (r'/user-update/(\w+)', UserUpdateHandler),
-  (r'/user-info/(\w+)', UserInfoHandler),
-  ('/campaigns/may-one/?', EmbedHandler),
-  ('/contact.do', ContactHandler),
-  # See wp_import
-  # ('/import.do', wp_import.ImportHandler),
+    ('/', RootRedirectHandler),
+    ('/total', GetTotalHandler),
+    (r'/donation-update/(\w+)', DonationTypeUpdateHandler),
+    (r'/upton-update/(\w+)', UptonUpdateHandler),
+    (r'/upton-update/', UptonUpdateNoNonceHandler),
+    (r'/subscribe-email/', SubscribeEmailPage),
+    (r'/user-update/(\w+)', UserUpdateHandler),
+    (r'/user-info/(\w+)', UserInfoHandler),
+    ('/campaigns/may-one/?', EmbedHandler),
+    ('/contact.do', ContactHandler),
+    # See wp_import
+    # ('/import.do', wp_import.ImportHandler),
 ]
 app = webapp2.WSGIApplication(HANDLERS + handlers.HANDLERS, debug=False,
                               config=dict(env=env.get_env()))

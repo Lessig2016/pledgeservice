@@ -3,6 +3,7 @@
 import urlparse
 import logging
 
+
 def ConstantTimeIsEqual(a, b):
   """Securely compare two strings without leaking timing information."""
   if len(a) != len(b):
@@ -26,10 +27,10 @@ def EnableCors(handler):
             netloc.startswith('localhost:') or
             netloc == 'lessig-team.appspot.com' or
             netloc == 'lessig-trust-test.appspot.com' or
-            netloc == 'lessig-trust.appspot.com' or 
+            netloc == 'lessig-trust.appspot.com' or
             netloc.endswith('lessig2016.us') or
             '104.131.9.3' in netloc):
-      logging.warning('Invalid origin: ' + origin + ' Netloc was: ' + netloc )
+      logging.warning('Invalid origin: ' + origin + ' Netloc was: ' + netloc)
       handler.error(403)
       return
 
@@ -38,4 +39,3 @@ def EnableCors(handler):
                                         'GET, POST')
     handler.response.headers.add_header('Access-Control-Allow-Headers',
                                         'content-type, origin')
-
