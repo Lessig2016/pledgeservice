@@ -374,7 +374,7 @@ class Empty(object):
 
 
 def build_pledge_dict(pledge):
-  payer = pledge.stripeCustomer or pledge.paypalPayerID or pledge.bitpay_invoice_id
+  payer = pledge.stripeCustomer or pledge.paypalTransactionID or pledge.bitpay_invoice_id
   date = utc_to_boston_time(pledge.donationTime)
   pledge_dict = {
       'Payment Gateway': get_payment_gateway(pledge),
