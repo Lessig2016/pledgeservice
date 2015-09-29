@@ -564,7 +564,7 @@ class SubscribeHandler(webapp2.RequestHandler):
     for argName in self.request.arguments():
       if argName.startswith('NationBuilder'):
         arg = self.request.get(argName)
-    NationBuilderVars[argName[13:]] = arg
+        NationBuilderVars[argName[13:]] = arg
 
     env.mailing_list_subscriber.Subscribe(
         email=email_input,
