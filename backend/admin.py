@@ -149,7 +149,7 @@ def full_pledge_data(pledge, user):
       pledge.donationTime.strftime('%-m/%-d/%y'),
       pledge.amountCents / 100.0,
       pledge.url_nonce,
-      pledge.stripeCustomer or pledge.paypalPayerID or pledge.bitpay_invoice_id,
+      pledge.stripeCustomer or pledge.paypalTransactionID or pledge.bitpay_invoice_id,
       pledge.email,
       user.first_name,
       user.last_name,
