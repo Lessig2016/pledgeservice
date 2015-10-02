@@ -1164,9 +1164,9 @@ html(xmlns='https://www.w3.org/1999/xhtml', lang='en-US')
         }
       script.
         var PLEDGE_URL="";var RECEIPT_URL="https://lessig2016.us/thank-you";function getParameterByName(name){name=name.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");var regex=new RegExp("[\\?&]"+ name+"=([^&#]*)"),results=regex.exec(location.search);return results===null?"":decodeURIComponent(results[1].replace(/\+/g," "));}
-        function step2(amount){$(".step-1-container").hide("slow");$("#step-1").removeClass("active");$("#step-2").addClass("active");if(amount>0){$("#amount_input").val(amount);$("#amount_input").parent().hide();}
+        function step2(amount){$(".step-1-container").hide("slow");$("#step-1").removeClass("active");$("#step-2").addClass("active");if(amount>0){$("#amount_input").val(amount);$("#amount_input").parent().hide();ga('send','event','Donate_page','step_1_clicked_amount',amount);}
         $(".step-2-container").show("slow");}
-        function step3(){$("#step-2").removeClass("active");$("#step-3").addClass("active");}
+        function step3(){$("#step-2").removeClass("active");$("#step-3").addClass("active");ga('send','event','Donate_page','step_2_clicked_donate_now', 1);}
         function addCommas(nStr){nStr+='';x=nStr.split('.');x1=x[0];x2=x.length>1?'.'+ x[1]:'';var rgx=/(\d+)(\d{3})/;while(rgx.test(x1)){x1=x1.replace(rgx,'$1'+','+'$2');}
         return x1+ x2;}
         function get_browser_info(){var ua=navigator.userAgent,tem,M=ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i)||[];if(/trident/i.test(M[1])){tem=/\brv[ :]+(\d+)/g.exec(ua)||[];return{name:'IE',version:(tem[1]||'')};}

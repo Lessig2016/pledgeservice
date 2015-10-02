@@ -77,7 +77,7 @@ var validateForm = function() {
 	{
 		$('#pledgeButton').prop('disabled',true);
 		$('label.rules').addClass('highlight-checkbox');
-		
+		ga('send','event','Donate_page','step_2_donate_fail', 'Checkbox was missing for legal');
 		return false;
 	}
 
@@ -163,8 +163,10 @@ var paypalPledge = function() {
           setLoading(true);
           $('#pledgeButton').toggleClass('disabled');
           createPledge("Paypal", { PAYPAL: { step : 'start' } });
+      }else{
+        ga('send','event','Donate_page','step_2_donate_fail', 'Paypal attempt failed form validation');
+        return false;
       }
-      return false;
     }
 };
 var pledge = function() {
@@ -180,6 +182,8 @@ var pledge = function() {
 var showError = function(errorText) {
   $('#formError').text(errorText);
   $('#formError').show();
+  ga('send','event','Donate_page','step_2_donate_fail', 'validation error: ' + errorText);
+
 }
 
 var setLoading = function(loading) {
