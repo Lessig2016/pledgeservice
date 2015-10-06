@@ -163,7 +163,8 @@ def full_pledge_data(pledge, user):
       user.employer,
       user.target or 'Whatever Helps',
       pledge.pledge_type,
-      pledge.recurring
+      pledge.recurring,
+      pledge.upsell
   ]
 
 
@@ -178,7 +179,7 @@ def generate_pledges_csv(file_name, pledge_type, pledge_time, full_data=False):
     if full_data:
       headers = ['SOURCE', 'donationTime', 'Amount ($)', 'url_nonce', 'stripeCustomer',
                  'Email', 'First Name', 'Last Name', 'Address', 'Address 2', 'City', 'State',
-                 'Zip', 'Phone', 'Country', 'Occupation', 'Employer', 'Targeting', 'Type', 'Recurring', 'Source']
+                 'Zip', 'Phone', 'Country', 'Occupation', 'Employer', 'Targeting', 'Type', 'Recurring', 'Source', 'Upsell']
     else:
       headers = ['zip', 'dollars', 'timestamp', 'date', 'city', 'state', 'latitude',
                  'longitude']
@@ -385,7 +386,8 @@ def build_pledge_dict(pledge):
       'Email': pledge.email,
       'Type': pledge.pledge_type,
       'Recurring': pledge.recurring,
-      'Source': pledge.source
+      'Source': pledge.source,
+      'Upsell': pledge.upsell
   }
 
   # add user info
