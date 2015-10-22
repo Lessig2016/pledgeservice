@@ -196,7 +196,7 @@ var setLoading = function(loading) {
     $('#pledgeButton .pledgeText').show();
     $('#pledgeButton').on('click', pledge);      
     $('#pledgeButton .spinner').hide();
-    $('#paypalButton').show();
+    //$('#paypalButton').show();
   }
 }
 

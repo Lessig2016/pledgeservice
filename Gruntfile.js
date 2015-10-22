@@ -19,13 +19,13 @@ var DEV_CONFIG = {
 var STAGING_CONFIG = {
   appName: 'lessig-trust',
   appVersion: 'staging',
-  productionPaypal: true,
+  productionPaypal: false,
 };
 
 var LESSIG_CONFIG = {
   appName: 'lessig-trust',
   appVersion: '1',
-  productionPaypal: true,
+  productionPaypal: false,
 };
 
 var preprocessAppYaml = function(config) {
